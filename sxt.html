@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>矿用本安型摄像仪 - 龙祥新能源科技</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+    
+    <!-- 配置Tailwind自定义主题 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#06b6d4', // 科技蓝
+                        secondary: '#10b981', // 环保绿
+                        dark: '#0f172a', // 深蓝黑
+                        'dark-light': '#1e293b',
+                        accent: '#7c3aed', // 霓虹紫
+                        'gray-tech': '#334155',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'Segoe UI', 'system-ui', 'sans-serif'],
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'glow-pulse': 'glow-pulse 2s infinite alternate',
+                        'data-flow': 'data-flow 8s linear infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        'glow-pulse': {
+                            '0%': { boxShadow: '0 0 5px rgba(6, 182, 212, 0.5)' },
+                            '100%': { boxShadow: '0 0 20px rgba(6, 182, 212, 0.8)' },
+                        },
+                        'data-flow': {
+                            '0%': { transform: 'translateX(-100%) scaleX(0)' },
+                            '50%': { transform: 'translateX(50vw) scaleX(1)' },
+                            '100%': { transform: 'translateX(100vw) scaleX(0)' }
+                        }
+                    }
+                },
+            }
+        }
+    </script>
+    
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .text-shadow {
+                text-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
+            }
+            .text-gradient {
+                background-clip: text;
+                -webkit-background-clip: text;
+                color: transparent;
+            }
+            .bg-grid {
+                background-image: 
+                    linear-gradient(rgba(6, 182, 212, 0.1) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(6, 182, 212, 0.1) 1px, transparent 1px);
+                background-size: 20px 20px;
+            }
+            .glow {
+                box-shadow: 0 0 15px rgba(6, 182, 212, 0.5), 0 0 30px rgba(6, 182, 212, 0.3);
+            }
+            .card-hover {
+                transition: all 0.3s ease;
+                transform-style: preserve-3d;
+                perspective: 1000px;
+            }
+            .card-hover:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 0 30px rgba(6, 182, 212, 0.4);
+            }
+            .scroll-indicator {
+                height: 3px;
+                background: linear-gradient(90deg, #06b6d4, #10b981);
+                position: fixed;
+                top: 0;
+                left: 0;
+                z-index: 100;
+                width: 0%;
+            }
+            .data-line {
+                position: absolute;
+                background: linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.6), transparent);
+                height: 1px;
+                transform-origin: left center;
+            }
+        }
+    </style>
+</head>
+<body class="bg-dark text-gray-100 font-sans bg-grid min-h-screen">
+    <!-- 数据流背景容器 -->
+    <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden opacity-30" id="dataFlow"></div>
+    
+    <!-- 滚动进度指示器 -->
+    <div id="scrollIndicator" class="scroll-indicator"></div>
+
+    <!-- 导航栏 -->
+    <nav class="bg-dark-light/90 backdrop-blur-md border-b border-primary/20 sticky top-0 z-50">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center">
+                    <a href="index.html" class="flex items-center">
+                        <i class="fa fa-video-camera text-primary text-2xl mr-2"></i>
+                        <span class="text-xl font-bold text-white">龙祥科技</span>
+                    </a>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="index.html" class="text-gray-300 hover:text-primary transition-colors">首页</a>
+                    <a href="index.html#projectsSection" class="text-gray-300 hover:text-primary transition-colors">产品中心</a>
+                    <a href="#" class="text-gray-300 hover:text-primary transition-colors">技术支持</a>
+                    <a href="#" class="text-gray-300 hover:text-primary transition-colors">联系我们</a>
+                </div>
+                
+                <div class="md:hidden">
+                    <button class="text-gray-300 hover:text-primary">
+                        <i class="fa fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <!-- 产品标题与返回 -->
+        <div class="mb-8 flex flex-col md:flex-row md:items-center justify-between">
+            <div>
+                <a href="index.html#projectsSection" class="inline-flex items-center text-gray-400 hover:text-primary mb-2">
+                    <i class="fa fa-arrow-left mr-2"></i> 返回产品列表
+                </a>
+                <h1 class="text-[clamp(1.8rem,4vw,2.5rem)] font-bold text-gradient bg-gradient-to-r from-primary to-secondary text-shadow">
+                    KBA127 矿用本安型摄像仪
+                </h1>
+                <p class="text-gray-400 mt-2">隔爆兼本质安全型 | 高清夜视 | 抗强粉尘</p>
+            </div>
+            <div class="mt-4 md:mt-0 flex items-center space-x-4">
+                <div class="flex items-center text-gray-400">
+                    <i class="fa fa-eye text-primary mr-2"></i>
+                    <span id="viewCount">加载中...</span> 次浏览
+                </div>
+                <button class="px-4 py-2 bg-primary/20 hover:bg-primary/30 text-primary rounded-lg border border-primary/40 transition-all flex items-center">
+                    <i class="fa fa-download mr-2"></i> 下载手册
+                </button>
+            </div>
+        </div>
+        
+        <!-- 产品图片展示 -->
+        <section class="mb-16">
+            <div class="grid md:grid-cols-4 gap-6">
+                <!-- 主图 -->
+                <div class="md:col-span-3 rounded-2xl overflow-hidden border-2 border-primary/30 glow">
+                    <img src="/images/摄像仪.png" alt="矿用本安型摄像仪主图" class="w-full h-full object-cover">
+                </div>
+                
+                <!-- 缩略图 -->
+                <div class="flex flex-col gap-4">
+                    <div class="rounded-xl overflow-hidden border border-primary/20 hover:border-primary/50 transition-all cursor-pointer card-hover">
+                        <img src="/images/摄像头1.png" alt="矿用本安型摄像仪细节图1" class="w-full h-full object-cover">
+                    </div>
+                    <div class="rounded-xl overflow-hidden border border-primary/20 hover:border-primary/50 transition-all cursor-pointer card-hover">
+                        <img src="/images/摄像头2.png" alt="矿用本安型摄像仪细节图2" class="w-full h-full object-cover">
+                    </div>
+                    <div class="rounded-xl overflow-hidden border border-primary/20 hover:border-primary/50 transition-all cursor-pointer card-hover">
+                        <img src="/images/摄像头3.png" alt="矿用本安型摄像仪安装图" class="w-full h-full object-cover">
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 产品概述 -->
+        <section class="mb-16 bg-dark-light/60 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-primary/20">
+            <h2 class="text-2xl font-bold mb-6 flex items-center">
+                <span class="inline-block w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center mr-3">
+                    <i class="fa fa-info text-primary"></i>
+                </span>
+                产品概述
+            </h2>
+            
+            <p class="text-gray-300 mb-4 text-lg">
+                KBA127矿用本安型摄像仪是专为煤矿井下等爆炸性环境设计的高清监控设备，符合GB3836系列标准，具备Ex ib I Mb防爆等级。设备采用全金属外壳和特殊密封工艺，能在高粉尘、高湿度、强振动的恶劣环境下稳定工作，为矿山安全生产提供实时可视化监控。
+            </p>
+            <p class="text-gray-300 text-lg">
+                产品集成了红外夜视功能，可在完全无光环境下清晰成像，配合智能分析算法，能有效识别井下异常情况并及时预警，是矿山智能化安全管理系统的核心组成部分。
+            </p>
+        </section>
+        
+        <!-- 核心参数 -->
+        <section class="mb-16">
+            <h2 class="text-2xl font-bold mb-6 flex items-center">
+                <span class="inline-block w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center mr-3">
+                    <i class="fa fa-cogs text-primary"></i>
+                </span>
+                核心技术参数
+            </h2>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="bg-dark-light/60 rounded-xl p-5 border border-primary/20 card-hover">
+                    <h3 class="text-primary font-semibold mb-3 flex items-center">
+                        <i class="fa fa-shield mr-2"></i> 防爆性能
+                    </h3>
+                    <ul class="space-y-2 text-gray-300">
+                        <li class="flex justify-between">
+                            <span class="text-gray-400">防爆型式</span>
+                            <span>矿用本质安全型</span>
+                        </li>
+                        <li class="flex justify-between">
+                            <span class="text-gray-400">防爆标志</span>
+                            <span>Ex ib I Mb</span>
+                        </li>
+                        <li class="flex justify-between">
+                            <span class="text-gray-400">防护等级</span>
+                            <span>IP68</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="bg-dark-light/60 rounded-xl p-5 border border-primary/20 card-hover">
+                    <h3 class="text-primary font-semibold mb-3 flex items-center">
+                        <i class="fa fa-video-camera mr-2"></i> 图像性能
+                    </h3>
+                    <ul class="space-y-2 text-gray-300">
+                        <li class="flex justify-between">
+                            <span class="text-gray-400">分辨率</span>
+                            <span>200万像素(1080P)</span>
+                        </li>
+                        <li class="flex justify-between">
+                            <span class="text-gray-400">夜视距离</span>
+                            <span>≥30米</span>
+                        </li>
+                        <li class="flex justify-between">
+                            <span class="text-gray-400">镜头焦距</span>
+                            <span>4mm/6mm/8mm可选</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="bg-dark-light/60 rounded-xl p-5 border border-primary/20 card-hover">
+                    <h3 class="text-primary font-semibold mb-3 flex items-center">
+                        <i class="fa fa-plug mr-2"></i> 电气参数
+                    </h3>
+                    <ul class="space-y-2 text-gray-300">
+                        <li class="flex justify-between">
+                            <span class="text-gray-400">工作电压</span>
+                            <span>DC 12V (本安电源)</span>
+                        </li>
+                        <li class="flex justify-between">
+                            <span class="text-gray-400">工作电流</span>
+                            <span>≤300mA</span>
+                        </li>
+                        <li class="flex justify-between">
+                            <span class="text-gray-400">传输方式</span>
+                            <span>以太网(RJ45)</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="bg-dark-light/60 rounded-xl p-5 border border-primary/20 card-hover">
+                    <h3 class="text-primary font-semibold mb-3 flex items-center">
+                        <i class="fa fa-thermometer-half mr-2"></i> 环境参数
+                    </h3>
+                    <ul class="space-y-2 text-gray-300">
+                        <li class="flex justify-between">
+                            <span class="text-gray-400">工作温度</span>
+                            <span>-30℃ ~ +60℃</span>
+                        </li>
+                        <li class="flex justify-between">
+                            <span class="text-gray-400">相对湿度</span>
+                            <span>≤95% (+25℃)</span>
+                        </li>
+                        <li class="flex justify-between">
+                            <span class="text-gray-400">大气压力</span>
+                            <span>80kPa ~ 106kPa</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="bg-dark-light/60 rounded-xl p-5 border border-primary/20 card-hover">
+                    <h3 class="text-primary font-semibold mb-3 flex items-center">
+                        <i class="fa fa-cog mr-2"></i> 物理特性
+                    </h3>
+                    <ul class="space-y-2 text-gray-300">
+                        <li class="flex justify-between">
+                            <span class="text-gray-400">外壳材质</span>
+                            <span>304不锈钢</span>
+                        </li>
+                        <li class="flex justify-between">
+                            <span class="text-gray-400">外形尺寸</span>
+                            <span>Φ120×200mm</span>
+                        </li>
+                        <li class="flex justify-between">
+                            <span class="text-gray-400">重量</span>
+                            <span>≈2.5kg</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="bg-dark-light/60 rounded-xl p-5 border border-primary/20 card-hover">
+                    <h3 class="text-primary font-semibold mb-3 flex items-center">
+                        <i class="fa fa-wifi mr-2"></i> 网络参数
+                    </h3>
+                    <ul class="space-y-2 text-gray-300">
+                        <li class="flex justify-between">
+                            <span class="text-gray-400">协议支持</span>
+                            <span>ONVIF、RTSP、HTTP</span>
+                        </li>
+                        <li class="flex justify-between">
+                            <span class="text-gray-400">编码格式</span>
+                            <span>H.265/H.264</span>
+                        </li>
+                        <li class="flex justify-between">
+                            <span class="text-gray-400">帧率</span>
+                            <span>25fps@1080P</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 功能特点 -->
+        <section class="mb-16">
+            <h2 class="text-2xl font-bold mb-6 flex items-center">
+                <span class="inline-block w-8 h-8 rounded-full bg-secondary/20 flex items-center justify-center mr-3">
+                    <i class="fa fa-star text-secondary"></i>
+                </span>
+                产品功能特点
+            </h2>
+            
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="space-y-6">
+                    <div class="flex">
+                        <div class="w-12 h-12 rounded-full bg-secondary/20 flex items-center justify-center mr-4 flex-shrink-0">
+                            <i class="fa fa-shield text-secondary text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold text-secondary mb-2">本安防爆设计</h3>
+                            <p class="text-gray-400">采用隔爆兼本质安全型设计，通过国家煤矿安全认证，可在含有甲烷等爆炸性气体的危险环境中安全使用，有效防止电火花引发爆炸。</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex">
+                        <div class="w-12 h-12 rounded-full bg-secondary/20 flex items-center justify-center mr-4 flex-shrink-0">
+                            <i class="fa fa-sun-o text-secondary text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold text-secondary mb-2">智能夜视功能</h3>
+                            <p class="text-gray-400">集成高功率红外灯组，支持自动日夜切换，在完全无光环境下可实现30米以上清晰监控，确保井下24小时不间断视频采集。</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex">
+                        <div class="w-12 h-12 rounded-full bg-secondary/20 flex items-center justify-center mr-4 flex-shrink-0">
+                            <i class="fa fa-tint text-secondary text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold text-secondary mb-2">超强环境适应</h3>
+                            <p class="text-gray-400">IP68级防护，全金属密封外壳，可抵御高粉尘、强振动、高低温及潮湿环境，适合煤矿井下、隧道等恶劣场所长期使用。</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="space-y-6">
+                    <div class="flex">
+                        <div class="w-12 h-12 rounded-full bg-secondary/20 flex items-center justify-center mr-4 flex-shrink-0">
+                            <i class="fa fa-bolt text-secondary text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold text-secondary mb-2">高清图像传输</h3>
+                            <p class="text-gray-400">200万像素高清分辨率，采用H.265高效编码技术，在低带宽环境下仍能保证清晰流畅的视频传输，节省网络资源。</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex">
+                        <div class="w-12 h-12 rounded-full bg-secondary/20 flex items-center justify-center mr-4 flex-shrink-0">
+                            <i class="fa fa-cogs text-secondary text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold text-secondary mb-2">智能分析集成</h3>
+                            <p class="text-gray-400">支持接入AI视频分析平台，可实现区域入侵检测、异常行为识别、设备状态监测等智能功能，提升安全管理效率。</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex">
+                        <div class="w-12 h-12 rounded-full bg-secondary/20 flex items-center justify-center mr-4 flex-shrink-0">
+                            <i class="fa fa-wrench text-secondary text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold text-secondary mb-2">便捷安装维护</h3>
+                            <p class="text-gray-400">采用专用防爆安装支架，支持多角度调节，可快速完成安装与调试；内置自诊断功能，便于远程维护和故障排查。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 应用场景 -->
+        <section class="mb-16">
+            <h2 class="text-2xl font-bold mb-6 flex items-center">
+                <span class="inline-block w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center mr-3">
+                    <i class="fa fa-map-marker text-accent"></i>
+                </span>
+                典型应用场景
+            </h2>
+            
+            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-dark-light/60 rounded-xl overflow-hidden border border-accent/20 card-hover">
+                    <div class="h-40 overflow-hidden">
+                        <img src="/images/掘进面.png" alt="井下掘进面监控" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-4">
+                        <h3 class="text-lg font-semibold text-accent mb-2">井下掘进面</h3>
+                        <p class="text-gray-400 text-sm">实时监控掘进进度和作业状态，保障施工安全</p>
+                    </div>
+                </div>
+                
+                <div class="bg-dark-light/60 rounded-xl overflow-hidden border border-accent/20 card-hover">
+                    <div class="h-40 overflow-hidden">
+                        <img src="/images/皮带运输机.png" alt="皮带运输机监控" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-4">
+                        <h3 class="text-lg font-semibold text-accent mb-2">皮带运输机</h3>
+                        <p class="text-gray-400 text-sm">监测运输设备运行状态，预防跑偏、堵塞等故障</p>
+                    </div>
+                </div>
+                
+                <div class="bg-dark-light/60 rounded-xl overflow-hidden border border-accent/20 card-hover">
+                    <div class="h-40 overflow-hidden">
+                        <img src="/images/变电所.png" alt="井下变电所监控" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-4">
+                        <h3 class="text-lg font-semibold text-accent mb-2">井下变电所</h3>
+                        <p class="text-gray-400 text-sm">远程监控电气设备运行状态，确保供电安全</p>
+                    </div>
+                </div>
+                
+                <div class="bg-dark-light/60 rounded-xl overflow-hidden border border-accent/20 card-hover">
+                    <div class="h-40 overflow-hidden">
+                        <img src="/images/巷道.png" alt="井下人员监控" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-4">
+                        <h3 class="text-lg font-semibold text-accent mb-2">井下巷道</h3>
+                        <p class="text-gray-400 text-sm">监控人员通行和设备运输，保障巷道安全畅通</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 技术支持与咨询 -->
+        <section class="mb-16 bg-gradient-to-r from-dark-light to-dark-light/70 rounded-2xl p-8 border border-primary/30 relative overflow-hidden">
+            <!-- 背景装饰 -->
+            <div class="absolute -right-20 -bottom-20 w-64 h-64 bg-primary/10 rounded-full blur-3xl"></div>
+            <div class="absolute -left-10 -top-10 w-40 h-40 bg-secondary/10 rounded-full blur-3xl"></div>
+            
+            <div class="relative z-10 grid md:grid-cols-2 gap-8 items-center">
+                <div>
+                    <h2 class="text-2xl font-bold mb-4">需要更多技术支持？</h2>
+                    <p class="text-gray-300 mb-6">我们的专业技术团队可为您提供定制化解决方案和全方位技术支持，欢迎随时联系咨询。</p>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center mr-4">
+                                <i class="fa fa-phone text-primary"></i>
+                            </div>
+                            <div>
+                                <div class="text-gray-400 text-sm">技术咨询热线</div>
+                                <div class="text-white font-medium">400-888-9999</div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center mr-4">
+                                <i class="fa fa-envelope text-primary"></i>
+                            </div>
+                            <div>
+                                <div class="text-gray-400 text-sm">技术支持邮箱</div>
+                                <div class="text-white font-medium">tech@longxiang-tech.com</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-dark/80 rounded-xl p-6 border border-primary/20">
+                    <h3 class="text-xl font-semibold mb-4 text-primary">在线咨询</h3>
+                    <form class="space-y-4">
+                        <div>
+                            <label class="block text-gray-400 mb-1 text-sm">姓名</label>
+                            <input type="text" class="w-full bg-dark-light border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-primary transition-colors" placeholder="请输入您的姓名">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-gray-400 mb-1 text-sm">单位</label>
+                            <input type="text" class="w-full bg-dark-light border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-primary transition-colors" placeholder="请输入您的单位名称">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-gray-400 mb-1 text-sm">联系电话</label>
+                            <input type="tel" class="w-full bg-dark-light border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-primary transition-colors" placeholder="请输入您的联系电话">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-gray-400 mb-1 text-sm">咨询内容</label>
+                            <textarea class="w-full bg-dark-light border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-primary transition-colors h-24" placeholder="请输入您的咨询内容"></textarea>
+                        </div>
+                        
+                        <button type="submit" class="w-full bg-primary hover:bg-primary/90 text-white font-medium py-2 px-4 rounded-lg transition-colors flex items-center justify-center">
+                            <i class="fa fa-paper-plane mr-2"></i> 提交咨询
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-dark-light py-12 border-t border-primary/20">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-3 gap-8 mb-8">
+                <div>
+                    <h3 class="text-xl font-bold text-primary mb-4 flex items-center">
+                        <i class="fa fa-microchip mr-2"></i> 龙祥新能源科技
+                    </h3>
+                    <p class="text-gray-400 mb-4">专注智能矿山技术研发，为矿业安全高效生产提供创新解决方案。</p>
+                    <div class="flex space-x-4">
+                        <a href="weixin://dl/chat?Aw-Wwang" class="w-10 h-10 rounded-full bg-dark/60 flex items-center justify-center text-primary hover:bg-primary/20 transition-all" title="微信联系">
+                            <i class="fa fa-weixin"></i>
+                        </a>
+                        <a href="https://weibo.com/龙煤集团" target="_blank" class="w-10 h-10 rounded-full bg-dark/60 flex items-center justify-center text-primary hover:bg-primary/20 transition-all" title="访问微博">
+                            <i class="fa fa-weibo"></i>
+                        </a>
+                        <a href="mailto:your_email@example.com" class="w-10 h-10 rounded-full bg-dark/60 flex items-center justify-center text-primary hover:bg-primary/20 transition-all" title="发送邮件">
+                            <i class="fa fa-envelope"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-200 mb-4">联系方式</h3>
+                    <ul class="space-y-3 text-gray-400">
+                        <li class="flex items-center">
+                            <i class="fa fa-map-marker w-6 text-primary"></i>
+                            <span>鸡冠区科技创新产业园区</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fa fa-phone w-6 text-primary"></i>
+                            <span>010-12345678</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fa fa-envelope w-6 text-primary"></i>
+                            <span>rd@longxiang-tech.com</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fa fa-clock-o w-6 text-primary"></i>
+                            <span>周一至周五 9:00-18:00</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-200 mb-4">快速链接</h3>
+                    <ul class="grid grid-cols-2 gap-2 text-gray-400">
+                        <li><a href="#" class="hover:text-primary transition-colors">关于我们</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">产品中心</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">技术创新</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">案例展示</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">招贤纳士</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">联系我们</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="pt-8 border-t border-gray-800 text-center text-gray-500 text-sm">
+                <p>© 2025 龙祥新能源科技有限公司 技术研发部 --小姚 版权所有 | 京ICP备12345678号</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 1. 滚动进度指示器
+        window.addEventListener('scroll', function() {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById("scrollIndicator").style.width = scrolled + "%";
+        });
+        
+        // 2. 数据流背景效果
+        function createDataLines() {
+            const container = document.getElementById('dataFlow');
+            if (!container) return;
+            container.innerHTML = '';
+            
+            const lineCount = 10;
+            for (let i = 0; i < lineCount; i++) {
+                const line = document.createElement('div');
+                line.classList.add('data-line', 'animate-data-flow');
+                
+                const top = Math.random() * 100 + 'vh';
+                const width = Math.random() * 200 + 100 + 'px';
+                const delay = Math.random() * 10 + 's';
+                const angle = Math.random() * 10 - 5;
+                
+                line.style.top = top;
+                line.style.width = width;
+                line.style.animationDelay = delay;
+                line.style.transform = `rotate(${angle}deg)`;
+                
+                container.appendChild(line);
+            }
+        }
+        
+        // 3. 浏览次数模拟（实际项目中替换为真实接口）
+        function loadViewCount() {
+            // 模拟API请求延迟
+            setTimeout(() => {
+                // 随机生成一个合理的浏览次数
+                const randomCount = Math.floor(Math.random() * 1000) + 500;
+                document.getElementById('viewCount').textContent = randomCount.toLocaleString();
+            }, 800);
+        }
+        
+        // 4. 页面加载完成后初始化
+        window.addEventListener('load', function() {
+            createDataLines();
+            loadViewCount();
+            
+            // 窗口大小变化时重新生成数据流
+            window.addEventListener('resize', createDataLines);
+        });
+    </script>
+</body>
+</html>

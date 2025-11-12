@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>矿用带式输送机保护装置主机 - 龙祥新能源科技</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+    
+    <!-- 配置Tailwind自定义主题 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#06b6d4', // 科技蓝
+                        secondary: '#10b981', // 安全绿
+                        dark: '#0f172a', // 深蓝黑
+                        'dark-light': '#1e293b',
+                        accent: '#f59e0b', // 警示橙
+                        'danger': '#ef4444', // 危险红
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'Segoe UI', 'system-ui', 'sans-serif'],
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'glow-pulse': 'glow-pulse 2s infinite alternate',
+                        'data-flow': 'data-flow 8s linear infinite',
+                    },
+                    keyframes: {
+                        'glow-pulse': {
+                            '0%': { boxShadow: '0 0 5px rgba(6, 182, 212, 0.5)' },
+                            '100%': { boxShadow: '0 0 20px rgba(6, 182, 212, 0.8)' },
+                        },
+                        'data-flow': {
+                            '0%': { transform: 'translateX(-100%) scaleX(0)' },
+                            '50%': { transform: 'translateX(50vw) scaleX(1)' },
+                            '100%': { transform: 'translateX(100vw) scaleX(0)' }
+                        }
+                    }
+                },
+            }
+        }
+    </script>
+    
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .text-shadow {
+                text-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
+            }
+            .text-gradient {
+                background-clip: text;
+                -webkit-background-clip: text;
+                color: transparent;
+            }
+            .bg-grid {
+                background-image: 
+                    linear-gradient(rgba(6, 182, 212, 0.1) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(6, 182, 212, 0.1) 1px, transparent 1px);
+                background-size: 20px 20px;
+            }
+            .glow {
+                box-shadow: 0 0 15px rgba(6, 182, 212, 0.5), 0 0 30px rgba(6, 182, 212, 0.3);
+            }
+            .card-hover {
+                transition: all 0.3s ease;
+            }
+            .card-hover:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 0 30px rgba(6, 182, 212, 0.4);
+            }
+            .scroll-indicator {
+                height: 3px;
+                background: linear-gradient(90deg, #06b6d4, #10b981);
+                position: fixed;
+                top: 0;
+                left: 0;
+                z-index: 100;
+                width: 0%;
+            }
+            .data-line {
+                position: absolute;
+                background: linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.6), transparent);
+                height: 1px;
+                transform-origin: left center;
+            }
+        }
+    </style>
+</head>
+<body class="bg-dark text-gray-100 font-sans bg-grid min-h-screen">
+    <!-- 数据流背景容器 -->
+    <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden opacity-30" id="dataFlow"></div>
+    
+    <!-- 滚动进度指示器 -->
+    <div id="scrollIndicator" class="scroll-indicator"></div>
+
+    <!-- 导航栏 -->
+    <nav class="bg-dark-light/90 backdrop-blur-md border-b border-primary/20 sticky top-0 z-50">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center">
+                    <a href="index.html" class="flex items-center">
+                        <i class="fa fa-cogs text-primary text-2xl mr-2"></i>
+                        <span class="text-xl font-bold text-white">龙祥科技</span>
+                    </a>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="index.html" class="text-gray-300 hover:text-primary transition-colors">首页</a>
+                    <a href="index.html#projectsSection" class="text-gray-300 hover:text-primary transition-colors">产品中心</a>
+                    <a href="#" class="text-gray-300 hover:text-primary transition-colors">技术支持</a>
+                    <a href="#" class="text-gray-300 hover:text-primary transition-colors">联系我们</a>
+                </div>
+                
+                <div class="md:hidden">
+                    <button class="text-gray-300 hover:text-primary">
+                        <i class="fa fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <!-- 产品标题与返回 -->
+        <div class="mb-8 flex flex-col md:flex-row md:items-center justify-between">
+            <div>
+                <a href="index.html#projectsSection" class="inline-flex items-center text-gray-400 hover:text-primary mb-2">
+                    <i class="fa fa-arrow-left mr-2"></i> 返回产品列表
+                </a>
+                <h1 class="text-[clamp(1.8rem,4vw,2.5rem)] font-bold text-gradient bg-gradient-to-r from-primary to-secondary text-shadow">
+                    矿用带式输送机保护装置主机
+                </h1>
+                <p class="text-gray-400 mt-2">
+                    <span class="inline-block px-3 py-1 bg-primary/20 text-primary rounded-full text-sm mr-2">
+                        型号: KHP519-Z
+                    </span>
+                    多重保护 | 智能控制 | 联机通信 | 故障预警
+                </p>
+            </div>
+            <div class="mt-4 md:mt-0 flex items-center space-x-4">
+                <div class="flex items-center text-gray-400">
+                    <i class="fa fa-eye text-primary mr-2"></i>
+                    <span id="viewCount">加载中...</span> 次浏览
+                </div>
+                <button class="px-4 py-2 bg-primary/20 hover:bg-primary/30 text-primary rounded-lg border border-primary/40 transition-all flex items-center">
+                    <a href="/皮保.pdf">
+                    <i class="fa fa-download mr-2"></i> 技术手册
+                    </a>
+                </button>
+            </div>
+        </div>
+        
+        <!-- 产品图片展示 -->
+        <section class="mb-12 flex justify-center">
+            <div class="w-full max-w-xl rounded-xl overflow-hidden border-2 border-primary/30 glow">
+                <img src="/images/皮保.png" alt="矿用带式输送机保护装置主机" class="w-full h-auto object-cover">
+            </div>
+        </section>
+        
+        <!-- 产品概述 -->
+        <section class="mb-16 bg-dark-light/60 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-primary/20">
+            <h2 class="text-2xl font-bold mb-6 flex items-center">
+                <span class="inline-block w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center mr-3">
+                    <i class="fa fa-info text-primary"></i>
+                </span>
+                产品概述
+            </h2>
+            
+            <p class="text-gray-300 mb-4 text-lg">
+                KHP519-Z矿用带式输送机保护装置主机是专为煤矿井下带式输送机设计的综合保护与控制设备，符合GB3836系列防爆标准，适用于含有甲烷及煤尘爆炸危险的环境。该装置集成多种保护功能与控制模式，可实现对带式输送机的全面监控与智能管理。
+            </p>
+            <p class="text-gray-300 text-lg">
+                系统通过分布式传感器网络实时监测输送机运行状态，具备速度、温度、跑偏、撕裂、堆煤等多重保护功能，同时支持集中控制、远程操作和联机通信，为带式输送机的安全高效运行提供全方位保障。
+            </p>
+        </section>
+        
+        <!-- 产品特点 -->
+        <section class="mb-16">
+            <h2 class="text-2xl font-bold mb-6 flex items-center">
+                <span class="inline-block w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center mr-3">
+                    <i class="fa fa-star text-accent"></i>
+                </span>
+                产品特点
+            </h2>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="bg-dark-light/60 rounded-xl p-5 border border-accent/20 card-hover">
+                    <div class="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center mb-4">
+                        <i class="fa fa-sliders text-accent"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-accent mb-2">多种控制模式</h3>
+                    <p class="text-gray-400 text-sm">具备集中控制、手动、远程控制及通信功能，满足不同操作需求</p>
+                </div>
+                
+                <div class="bg-dark-light/60 rounded-xl p-5 border border-accent/20 card-hover">
+                    <div class="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center mb-4">
+                        <i class="fa fa-link text-accent"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-accent mb-2">多皮带集中管理</h3>
+                    <p class="text-gray-400 text-sm">支持顺逆煤流操作，集中管理多条皮带，提高操作效率和安全性</p>
+                </div>
+                
+                <div class="bg-dark-light/60 rounded-xl p-5 border border-accent/20 card-hover">
+                    <div class="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center mb-4">
+                        <i class="fa fa-bell text-accent"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-accent mb-2">语音预警系统</h3>
+                    <p class="text-gray-400 text-sm">内置语音预警和故障报警，精确识别故障类型和皮带机编号</p>
+                </div>
+                
+                <div class="bg-dark-light/60 rounded-xl p-5 border border-accent/20 card-hover">
+                    <div class="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center mb-4">
+                        <i class="fa fa-desktop text-accent"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-accent mb-2">清晰显示界面</h3>
+                    <p class="text-gray-400 text-sm">采用3.5英寸显示屏，界面美观，信息展示清晰，提升操作便捷性</p>
+                </div>
+                
+                <div class="bg-dark-light/60 rounded-xl p-5 border border-accent/20 card-hover">
+                    <div class="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center mb-4">
+                        <i class="fa fa-hand-pointer-o text-accent"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-accent mb-2">耐用按钮设计</h3>
+                    <p class="text-gray-400 text-sm">纯机械无触点按钮，防止操作不当损坏，增强耐用性和可靠性</p>
+                </div>
+                
+                <div class="bg-dark-light/60 rounded-xl p-5 border border-accent/20 card-hover">
+                    <div class="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center mb-4">
+                        <i class="fa fa-comments text-accent"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-accent mb-2">联机通话功能</h3>
+                    <p class="text-gray-400 text-sm">支持声光信号通信，实现沿线预警，提升系统安全和响应速度</p>
+                </div>
+                
+                <div class="bg-dark-light/60 rounded-xl p-5 border border-accent/20 card-hover">
+                    <div class="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center mb-4">
+                        <i class="fa fa-tachometer text-accent"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-accent mb-2">速度监测保护</h3>
+                    <p class="text-gray-400 text-sm">实时监测速度，显示带速和速度保护值，确保超速和打滑保护</p>
+                </div>
+                
+                <div class="bg-dark-light/60 rounded-xl p-5 border border-accent/20 card-hover">
+                    <div class="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center mb-4">
+                        <i class="fa fa-thermometer text-accent"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-accent mb-2">温度监测保护</h3>
+                    <p class="text-gray-400 text-sm">实时监测温度，显示温度值和保护动作值，实现超温保护</p>
+                </div>
+                
+                <div class="bg-dark-light/60 rounded-xl p-5 border border-accent/20 card-hover">
+                    <div class="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center mb-4">
+                        <i class="fa fa-cubes text-accent"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-accent mb-2">高灵敏堆煤检测</h3>
+                    <p class="text-gray-400 text-sm">电极式设计，灵敏度可调，确保高可靠性，适应多变工作环境</p>
+                </div>
+                
+                <div class="bg-dark-light/60 rounded-xl p-5 border border-accent/20 card-hover">
+                    <div class="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center mb-4">
+                        <i class="fa fa-map-marker text-accent"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-accent mb-2">沿线对位功能</h3>
+                    <p class="text-gray-400 text-sm">增加上位机控制，提供硬件联锁集控和通信方式，提高灵活性</p>
+                </div>
+                
+                <div class="bg-dark-light/60 rounded-xl p-5 border border-accent/20 card-hover">
+                    <div class="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center mb-4">
+                        <i class="fa fa-play-circle text-accent"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-accent mb-2">灵活操作控制</h3>
+                    <p class="text-gray-400 text-sm">任意设备可按预设方式启动或停止，确保操作灵活性和便捷性</p>
+                </div>
+                
+                <div class="bg-dark-light/60 rounded-xl p-5 border border-accent/20 card-hover">
+                    <div class="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center mb-4">
+                        <i class="fa fa-exclamation-triangle text-accent"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-accent mb-2">急停自动寻址</h3>
+                    <p class="text-gray-400 text-sm">可接入CAN通讯急停，实现急停自动寻址功能，快速定位故障点</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 产品参数 -->
+        <section class="mb-16">
+            <h2 class="text-2xl font-bold mb-6 flex items-center">
+                <span class="inline-block w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center mr-3">
+                    <i class="fa fa-calculator text-primary"></i>
+                </span>
+                产品参数
+            </h2>
+            
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-dark-light/60 rounded-xl p-6 border border-primary/20">
+                    <h3 class="text-primary font-semibold mb-4 flex items-center">
+                        <i class="fa fa-plug mr-2"></i> 电气参数
+                    </h3>
+                    <ul class="space-y-3 text-gray-300">
+                        <li class="flex justify-between pb-2 border-b border-gray-700">
+                            <span class="text-gray-400">输入电压范围</span>
+                            <span class="font-medium">AC 127V至230V</span>
+                        </li>
+                        <li class="flex justify-between pb-2 border-b border-gray-700">
+                            <span class="text-gray-400">电压波动范围</span>
+                            <span>75%至110%</span>
+                        </li>
+                        <li class="flex justify-between pb-2 border-b border-gray-700">
+                            <span class="text-gray-400">本安型输出最大开路电压</span>
+                            <span>DC12±0.5V</span>
+                        </li>
+                        <li class="flex justify-between pb-2 border-b border-gray-700">
+                            <span class="text-gray-400">本安型输出最大外部分布电感</span>
+                            <span>1mH</span>
+                        </li>
+                        <li class="flex justify-between pb-2 border-b border-gray-700">
+                            <span class="text-gray-400">本安型输出最大外部分布电容</span>
+                            <span>0.1uF</span>
+                        </li>
+                        <li class="flex justify-between pb-2 border-b border-gray-700">
+                            <span class="text-gray-400">过流保护设定值</span>
+                            <span>1500mA</span>
+                        </li>
+                        <li class="flex justify-between">
+                            <span class="text-gray-400">本安型输出最大短路电流</span>
+                            <span>DC400mA</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="bg-dark-light/60 rounded-xl p-6 border border-primary/20">
+                    <h3 class="text-primary font-semibold mb-4 flex items-center">
+                        <i class="fa fa-signal mr-2"></i> 性能参数
+                    </h3>
+                    <ul class="space-y-3 text-gray-300">
+                        <li class="flex justify-between pb-2 border-b border-gray-700">
+                            <span class="text-gray-400">控制继电器输出接点容量</span>
+                            <span>AC250V/5A</span>
+                        </li>
+                        <li class="flex justify-between pb-2 border-b border-gray-700">
+                            <span class="text-gray-400">集中控制信号电压/电流</span>
+                            <span>&lt;12V，10mA</span>
+                        </li>
+                        <li class="flex justify-between pb-2 border-b border-gray-700">
+                            <span class="text-gray-400">扬声器参数</span>
+                            <span>12V，30mA，≤5W</span>
+                        </li>
+                        <li class="flex justify-between pb-2 border-b border-gray-700">
+                            <span class="text-gray-400">传感器连线长度</span>
+                            <span>≤1000m</span>
+                        </li>
+                        <li class="flex justify-between pb-2 border-b border-gray-700">
+                            <span class="text-gray-400">集中控制台数量</span>
+                            <span>8台</span>
+                        </li>
+                        <li class="flex justify-between pb-2 border-b border-gray-700">
+                            <span class="text-gray-400">开关量/模拟量</span>
+                            <span>16路输入/9路输出<br>2路PT100/6路模拟量输入</span>
+                        </li>
+                        <li class="flex justify-between">
+                            <span class="text-gray-400">通讯功能</span>
+                            <span>支持CAN通讯急停</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 配套传感器 -->
+        <section class="mb-16">
+            <h2 class="text-2xl font-bold mb-6 flex items-center">
+                <span class="inline-block w-8 h-8 rounded-full bg-secondary/20 flex items-center justify-center mr-3">
+                    <i class="fa fa-puzzle-piece text-secondary"></i>
+                </span>
+                配套传感器
+            </h2>
+            
+            <div class="bg-dark-light/60 rounded-xl overflow-hidden border border-secondary/20">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left">
+                        <thead class="bg-dark text-secondary border-b border-gray-700">
+                            <tr>
+                                <th scope="col" class="px-6 py-4 font-semibold">产品型号</th>
+                                <th scope="col" class="px-6 py-4 font-semibold">产品名称</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b border-gray-800 hover:bg-dark/50 transition-colors">
+                                <td class="px-6 py-4 font-medium">KHP519-Z</td>
+                                <td class="px-6 py-4">矿用带式输送机保护装置主机</td>
+                            </tr>
+                            <tr class="border-b border-gray-800 hover:bg-dark/50 transition-colors">
+                                <td class="px-6 py-4 font-medium">KJD18</td>
+                                <td class="px-6 py-4">矿用本安型终端</td>
+                            </tr>
+                            <tr class="border-b border-gray-800 hover:bg-dark/50 transition-colors">
+                                <td class="px-6 py-4 font-medium">GZW20/150</td>
+                                <td class="px-6 py-4">矿用本安型振动温度传感器</td>
+                            </tr>
+                            <tr class="border-b border-gray-800 hover:bg-dark/50 transition-colors">
+                                <td class="px-6 py-4 font-medium">GQQ5</td>
+                                <td class="px-6 py-4">矿用本安型烟雾传感器</td>
+                            </tr>
+                            <tr class="border-b border-gray-800 hover:bg-dark/50 transition-colors">
+                                <td class="px-6 py-4 font-medium">KJD18(A)</td>
+                                <td class="px-6 py-4">矿用本安型显示终端</td>
+                            </tr>
+                            <tr class="border-b border-gray-800 hover:bg-dark/50 transition-colors">
+                                <td class="px-6 py-4 font-medium">GWP100</td>
+                                <td class="px-6 py-4">矿用本安型温度传感器</td>
+                            </tr>
+                            <tr class="border-b border-gray-800 hover:bg-dark/50 transition-colors">
+                                <td class="px-6 py-4 font-medium">GSG5、GSC5</td>
+                                <td class="px-6 py-4">矿用本安型速度传感器</td>
+                            </tr>
+                            <tr class="border-b border-gray-800 hover:bg-dark/50 transition-colors">
+                                <td class="px-6 py-4 font-medium">GVY5、GVH3</td>
+                                <td class="px-6 py-4">矿用本安型撕裂传感器</td>
+                            </tr>
+                            <tr class="border-b border-gray-800 hover:bg-dark/50 transition-colors">
+                                <td class="px-6 py-4 font-medium">GEJ30</td>
+                                <td class="px-6 py-4">矿用本安型跑偏传感器</td>
+                            </tr>
+                            <tr class="border-b border-gray-800 hover:bg-dark/50 transition-colors">
+                                <td class="px-6 py-4 font-medium">KTK18(A)、KTK18(B)</td>
+                                <td class="px-6 py-4">矿用本安型扩音电话</td>
+                            </tr>
+                            <tr class="border-b border-gray-800 hover:bg-dark/50 transition-colors">
+                                <td class="px-6 py-4 font-medium">KHJ18、KHJ24</td>
+                                <td class="px-6 py-4">矿用本安型急停传感器</td>
+                            </tr>
+                            <tr class="border-b border-gray-800 hover:bg-dark/50 transition-colors">
+                                <td class="px-6 py-4 font-medium">KHJ18(A)</td>
+                                <td class="px-6 py-4">矿用本安型急停闭锁开关</td>
+                            </tr>
+                            <tr class="border-b border-gray-800 hover:bg-dark/50 transition-colors">
+                                <td class="px-6 py-4 font-medium">GWH150</td>
+                                <td class="px-6 py-4">矿用本安型红外温度传感器</td>
+                            </tr>
+                            <tr class="hover:bg-dark/50 transition-colors">
+                                <td class="px-6 py-4 font-medium">GUD5</td>
+                                <td class="px-6 py-4">矿用本安型堆煤传感器</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 设备展示界面 -->
+        <section class="mb-16">
+            <h2 class="text-2xl font-bold mb-6 flex items-center">
+                <span class="inline-block w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center mr-3">
+                    <i class="fa fa-desktop text-primary"></i>
+                </span>
+                设备操作界面展示
+            </h2>
+            
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-dark-light/60 rounded-xl overflow-hidden border border-primary/20 card-hover">
+                    <div class="p-4 border-b border-gray-700">
+                        <h3 class="text-primary font-semibold">主监控界面</h3>
+                    </div>
+                    <div class="h-64 overflow-hidden">
+                        <img src="/images/皮保1.png" alt="带式输送机保护装置主监控界面" class="w-full h-full object-contain">
+                    </div>
+                    <div class="p-4 text-sm text-gray-400">
+                        实时显示皮带运行状态、速度、温度等关键参数及各保护点状态
+                    </div>
+                </div>
+                
+                <div class="bg-dark-light/60 rounded-xl overflow-hidden border border-primary/20 card-hover">
+                    <div class="p-4 border-b border-gray-700">
+                        <h3 class="text-primary font-semibold">故障信息界面</h3>
+                    </div>
+                    <div class="h-64 overflow-hidden">
+                        <img src="/images/皮保2.png" alt="故障信息显示界面" class="w-full h-full object-contain">
+                    </div>
+                    <div class="p-4 text-sm text-gray-400">
+                        显示故障类型、位置、时间等详细信息，支持故障记录查询与分析
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 技术支持与咨询 -->
+        <section class="mb-16 bg-gradient-to-r from-dark-light to-dark-light/70 rounded-2xl p-8 border border-primary/30 relative overflow-hidden">
+            <!-- 背景装饰 -->
+            <div class="absolute -right-20 -bottom-20 w-64 h-64 bg-primary/10 rounded-full blur-3xl"></div>
+            <div class="absolute -left-10 -top-10 w-40 h-40 bg-secondary/10 rounded-full blur-3xl"></div>
+            
+            <div class="relative z-10 grid md:grid-cols-2 gap-8 items-center">
+                <div>
+                    <h2 class="text-2xl font-bold mb-4">需要更多技术支持？</h2>
+                    <p class="text-gray-300 mb-6">我们的专业技术团队可为您提供定制化解决方案和全方位技术支持，欢迎随时联系咨询。</p>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center mr-4">
+                                <i class="fa fa-phone text-primary"></i>
+                            </div>
+                            <div>
+                                <div class="text-gray-400 text-sm">技术咨询热线</div>
+                                <div class="text-white font-medium">400-888-9999</div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center mr-4">
+                                <i class="fa fa-envelope text-primary"></i>
+                            </div>
+                            <div>
+                                <div class="text-gray-400 text-sm">技术支持邮箱</div>
+                                <div class="text-white font-medium">tech@longxiang-tech.com</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-dark/80 rounded-xl p-6 border border-primary/20">
+                    <h3 class="text-xl font-semibold mb-4 text-primary">在线咨询</h3>
+                    <form class="space-y-4">
+                        <div>
+                            <label class="block text-gray-400 mb-1 text-sm">姓名</label>
+                            <input type="text" class="w-full bg-dark-light border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-primary transition-colors" placeholder="请输入您的姓名">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-gray-400 mb-1 text-sm">单位</label>
+                            <input type="text" class="w-full bg-dark-light border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-primary transition-colors" placeholder="请输入您的单位名称">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-gray-400 mb-1 text-sm">联系电话</label>
+                            <input type="tel" class="w-full bg-dark-light border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-primary transition-colors" placeholder="请输入您的联系电话">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-gray-400 mb-1 text-sm">咨询内容</label>
+                            <textarea class="w-full bg-dark-light border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-primary transition-colors h-24" placeholder="请输入您的咨询内容"></textarea>
+                        </div>
+                        
+                        <button type="submit" class="w-full bg-primary hover:bg-primary/90 text-white font-medium py-2 px-4 rounded-lg transition-colors flex items-center justify-center">
+                            <i class="fa fa-paper-plane mr-2"></i> 提交咨询
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-dark-light py-12 border-t border-primary/20">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-3 gap-8 mb-8">
+                <div>
+                    <h3 class="text-xl font-bold text-primary mb-4 flex items-center">
+                        <i class="fa fa-microchip mr-2"></i> 龙祥新能源科技
+                    </h3>
+                    <p class="text-gray-400 mb-4">专注智能矿山技术研发，为矿业安全高效生产提供创新解决方案。</p>
+                    <div class="flex space-x-4">
+                        <a href="weixin://dl/chat?Aw-Wwang" class="w-10 h-10 rounded-full bg-dark/60 flex items-center justify-center text-primary hover:bg-primary/20 transition-all" title="微信联系">
+                            <i class="fa fa-weixin"></i>
+                        </a>
+                        <a href="https://weibo.com/龙煤集团" target="_blank" class="w-10 h-10 rounded-full bg-dark/60 flex items-center justify-center text-primary hover:bg-primary/20 transition-all" title="访问微博">
+                            <i class="fa fa-weibo"></i>
+                        </a>
+                        <a href="mailto:your_email@example.com" class="w-10 h-10 rounded-full bg-dark/60 flex items-center justify-center text-primary hover:bg-primary/20 transition-all" title="发送邮件">
+                            <i class="fa fa-envelope"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-200 mb-4">联系方式</h3>
+                    <ul class="space-y-3 text-gray-400">
+                        <li class="flex items-center">
+                            <i class="fa fa-map-marker w-6 text-primary"></i>
+                            <span>鸡冠区科技创新产业园区</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fa fa-phone w-6 text-primary"></i>
+                            <span>010-12345678</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fa fa-envelope w-6 text-primary"></i>
+                            <span>rd@longxiang-tech.com</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fa fa-clock-o w-6 text-primary"></i>
+                            <span>周一至周五 9:00-18:00</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-200 mb-4">快速链接</h3>
+                    <ul class="grid grid-cols-2 gap-2 text-gray-400">
+                        <li><a href="#" class="hover:text-primary transition-colors">关于我们</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">产品中心</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">技术创新</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">案例展示</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">招贤纳士</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">联系我们</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="pt-8 border-t border-gray-800 text-center text-gray-500 text-sm">
+                <p>© 2025 龙祥新能源科技有限公司 技术研发部 --小姚 版权所有 | 京ICP备12345678号</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 1. 滚动进度指示器
+        window.addEventListener('scroll', function() {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById("scrollIndicator").style.width = scrolled + "%";
+        });
+        
+        // 2. 数据流背景效果
+        function createDataLines() {
+            const container = document.getElementById('dataFlow');
+            if (!container) return;
+            container.innerHTML = '';
+            
+            const lineCount = 10;
+            for (let i = 0; i < lineCount; i++) {
+                const line = document.createElement('div');
+                line.classList.add('data-line', 'animate-data-flow');
+                
+                const top = Math.random() * 100 + 'vh';
+                const width = Math.random() * 200 + 100 + 'px';
+                const delay = Math.random() * 10 + 's';
+                const angle = Math.random() * 10 - 5;
+                
+                line.style.top = top;
+                line.style.width = width;
+                line.style.animationDelay = delay;
+                line.style.transform = `rotate(${angle}deg)`;
+                
+                container.appendChild(line);
+            }
+        }
+        
+        // 3. 浏览次数模拟
+        function loadViewCount() {
+            setTimeout(() => {
+                const randomCount = Math.floor(Math.random() * 1500) + 800;
+                document.getElementById('viewCount').textContent = randomCount.toLocaleString();
+            }, 800);
+        }
+        
+        // 4. 页面加载完成后初始化
+        window.addEventListener('load', function() {
+            createDataLines();
+            loadViewCount();
+            window.addEventListener('resize', createDataLines);
+        });
+    </script>
+</body>
+</html>

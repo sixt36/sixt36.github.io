@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>矿用本安型手机 - 智能矿山技术研发部</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+    
+    <!-- 配置Tailwind自定义主题 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#06b6d4', // 科技蓝
+                        secondary: '#10b981', // 环保绿
+                        dark: '#0f172a', // 深蓝黑
+                        'dark-light': '#1e293b',
+                        accent: '#7c3aed', // 霓虹紫
+                        'gray-tech': '#334155',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'Segoe UI', 'system-ui', 'sans-serif'],
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'ripple': 'ripple 1.5s ease-out forwards',
+                        'glow-pulse': 'glow-pulse 2s infinite alternate',
+                        'fall': 'fall 15s linear infinite',
+                        'data-flow': 'data-flow 8s linear infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        ripple: {
+                            '0%': { transform: 'scale(0)', opacity: 1 },
+                            '100%': { transform: 'scale(2)', opacity: 0 },
+                        },
+                        'glow-pulse': {
+                            '0%': { boxShadow: '0 0 5px rgba(16, 185, 129, 0.5)' },
+                            '100%': { boxShadow: '0 0 20px rgba(16, 185, 129, 0.8)' },
+                        },
+                        fall: {
+                            '0%': { transform: 'translateY(-100%)' },
+                            '100%': { transform: 'translateY(150%)' }
+                        },
+                        'data-flow': {
+                            '0%': { transform: 'translateX(-100%) scaleX(0)' },
+                            '50%': { transform: 'translateX(50vw) scaleX(1)' },
+                            '100%': { transform: 'translateX(100vw) scaleX(0)' }
+                        }
+                    }
+                },
+            }
+        }
+    </script>
+    
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .text-shadow {
+                text-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+            }
+            .text-gradient {
+                background-clip: text;
+                -webkit-background-clip: text;
+                color: transparent;
+            }
+            .bg-grid {
+                background-image: 
+                    linear-gradient(rgba(16, 185, 129, 0.1) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(16, 185, 129, 0.1) 1px, transparent 1px);
+                background-size: 20px 20px;
+            }
+            .glow {
+                box-shadow: 0 0 15px rgba(16, 185, 129, 0.5), 0 0 30px rgba(16, 185, 129, 0.3);
+            }
+            .card-hover {
+                transition: all 0.3s ease;
+                transform-style: preserve-3d;
+                perspective: 1000px;
+                position: relative;
+            }
+            .card-hover:hover {
+                transform: translateY(-8px) rotateX(2deg) rotateY(2deg);
+                box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04), 0 0 30px rgba(16, 185, 129, 0.4);
+            }
+            .card-hover::after {
+                content: '';
+                position: absolute;
+                inset: -5px;
+                background: inherit;
+                border-radius: inherit;
+                filter: blur(10px);
+                opacity: 0.2;
+                transform: translateZ(-1px);
+                transition: opacity 0.3s ease;
+                z-index: -1;
+            }
+            .card-hover:hover::after {
+                opacity: 0.5;
+            }
+            .scroll-indicator {
+                height: 3px;
+                background: linear-gradient(90deg, #10b981, #06b6d4);
+                position: fixed;
+                top: 0;
+                left: 0;
+                z-index: 100;
+                width: 0%;
+            }
+            .device-view {
+                transform-style: preserve-3d;
+                transition: transform 0.8s cubic-bezier(0.2, 0.85, 0.4, 1.275);
+            }
+            .device-view:hover {
+                transform: rotateY(15deg) rotateX(5deg) scale(1.02);
+            }
+            .feature-point {
+                opacity: 0;
+                transform: translateY(20px);
+                transition: all 0.6s ease-out;
+            }
+            .feature-point.visible {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body class="bg-dark text-gray-100 font-sans bg-grid min-h-screen cursor-default">
+    <!-- 数据流背景容器 -->
+    <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden" id="dataFlow"></div>
+    
+    <!-- 鼠标特效容器 -->
+    <div id="mouseEffects" class="fixed inset-0 pointer-events-none z-50"></div>
+    
+    <!-- 滚动进度指示器 -->
+    <div id="scrollIndicator" class="scroll-indicator"></div>
+
+    <!-- 导航栏 -->
+    <nav class="bg-dark-light/90 backdrop-blur-md border-b border-secondary/20 fixed w-full z-50">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="index.html" class="flex items-center">
+                        <i class="fa fa-microchip text-secondary text-2xl mr-2"></i>
+                        <span class="text-xl font-bold text-gradient bg-gradient-to-r from-secondary to-primary">龙祥新能源科技有限公司</span>
+                    </a>
+                </div>
+                
+                <!-- 桌面端导航 -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="index.html" class="text-gray-300 hover:text-secondary transition-colors">首页</a>
+                    <a href="index.html#projectsSection" class="text-gray-300 hover:text-secondary transition-colors">产品中心</a>
+                    <a href="index.html#techSection" class="text-gray-300 hover:text-secondary transition-colors">技术实力</a>
+                    <a href="#contactSection" class="text-gray-300 hover:text-secondary transition-colors">联系我们</a>
+                </div>
+                
+                <!-- 移动端菜单按钮 -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobileMenuBtn" class="text-gray-300 hover:text-secondary">
+                        <i class="fa fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 移动端导航菜单 -->
+        <div id="mobileMenu" class="md:hidden hidden bg-dark-light border-t border-secondary/20">
+            <div class="container mx-auto px-4 py-3 space-y-3">
+                <a href="index.html" class="block text-gray-300 hover:text-secondary transition-colors py-2">首页</a>
+                <a href="index.html#projectsSection" class="block text-gray-300 hover:text-secondary transition-colors py-2">产品中心</a>
+                <a href="index.html#techSection" class="block text-gray-300 hover:text-secondary transition-colors py-2">技术实力</a>
+                <a href="#contactSection" class="block text-gray-300 hover:text-secondary transition-colors py-2">联系我们</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16">
+        <!-- 面包屑导航 -->
+        <div class="text-sm text-gray-400 mb-8 flex flex-wrap items-center">
+            <a href="index.html" class="hover:text-secondary transition-colors">首页</a>
+            <i class="fa fa-angle-right mx-2 text-gray-600"></i>
+            <a href="index.html#projectsSection" class="hover:text-secondary transition-colors">产品中心</a>
+            <i class="fa fa-angle-right mx-2 text-gray-600"></i>
+            <span class="text-secondary">矿用本安型手机</span>
+        </div>
+
+        <!-- 产品展示区 -->
+        <section class="mb-16 grid md:grid-cols-2 gap-8 items-start">
+            <!-- 产品图片画廊 -->
+            <div class="space-y-4">
+                <!-- 主图 -->
+                <div class="bg-dark-light/60 rounded-2xl overflow-hidden border border-secondary/20 p-4 device-view">
+                    <img id="productMainImg" src="images/手机(1).png" alt="矿用本安型手机" class="w-full h-auto rounded-xl">
+                </div>
+                
+                <!-- 缩略图 -->
+                <div class="grid grid-cols-4 gap-3">
+                    <div class="cursor-pointer rounded-lg overflow-hidden border-2 border-secondary opacity-100">
+                        <img src="images/手机(1).png" alt="矿用本安型手机正面" class="w-full h-20 object-cover">
+                    </div>
+                    <div class="cursor-pointer rounded-lg overflow-hidden border-2 border-transparent opacity-70 hover:opacity-100 transition-all">
+                        <img src="/images/手机1.png" alt="矿用本安型手机侧面" class="w-full h-20 object-cover">
+                    </div>
+                    <div class="cursor-pointer rounded-lg overflow-hidden border-2 border-transparent opacity-70 hover:opacity-100 transition-all">
+                        <img src="/images/手机2.png" alt="矿用本安型手机功能界面" class="w-full h-20 object-cover">
+                    </div>
+                    <div class="cursor-pointer rounded-lg overflow-hidden border-2 border-transparent opacity-70 hover:opacity-100 transition-all">
+                        <img src="/images/手机3.png" alt="矿用本安型手机配件" class="w-full h-20 object-cover">
+                    </div>
+                </div>
+                
+                <!-- 产品标签 -->
+                <div class="flex flex-wrap gap-2 mt-2">
+                    <span class="px-3 py-1 bg-secondary/10 text-secondary rounded-full text-sm border border-secondary/30">Ex ib I Mb</span>
+                    <span class="px-3 py-1 bg-gray-700/50 text-gray-300 rounded-full text-sm border border-gray-600">本安防爆</span>
+                    <span class="px-3 py-1 bg-gray-700/50 text-gray-300 rounded-full text-sm border border-gray-600">双模通信</span>
+                    <span class="px-3 py-1 bg-gray-700/50 text-gray-300 rounded-full text-sm border border-gray-600">IP68防护</span>
+                    <span class="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm border border-primary/30">定位追踪</span>
+                </div>
+            </div>
+            
+            <!-- 产品信息 -->
+            <div class="bg-dark-light/60 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-secondary/20">
+                <h1 class="text-[clamp(1.8rem,4vw,2.5rem)] font-bold mb-4 text-gradient bg-gradient-to-r from-secondary to-primary text-shadow">
+                    KTW489矿用本安型手机
+                </h1>
+                
+                <div class="flex items-center mb-6">
+                    <div class="flex items-center mr-6">
+                        <i class="fa fa-star text-yellow-400"></i>
+                        <i class="fa fa-star text-yellow-400"></i>
+                        <i class="fa fa-star text-yellow-400"></i>
+                        <i class="fa fa-star text-yellow-400"></i>
+                        <i class="fa fa-star text-yellow-400"></i>
+                        <span class="ml-2 text-gray-400">5.0/5分</span>
+                    </div>
+                    <div class="text-gray-400">
+                        <i class="fa fa-eye mr-1"></i> 已被浏览 2,547 次
+                    </div>
+                </div>
+                
+                <div class="mb-8">
+                    <h2 class="text-xl font-semibold mb-4 text-gray-200">产品概述</h2>
+                    <p class="text-gray-300 leading-relaxed mb-4">
+                      KTW489 采用高强度PC+ABS+TPU复合外壳与钢化玻璃屏幕，防护等级达IP68，可抵御极端温度（-40°C至+60°C）、剧烈振动及1米跌落冲击，是恶劣工况下通信与数据处理的可靠工具。 
+                    </p>
+                    <p class="text-gray-300 leading-relaxed">
+                        KTW490 以轻量化设计（仅183g）和紧凑机身（164mm×75mm×10mm）为亮点，搭载IP54防护外壳，兼顾便携性与耐用性，适用于井下巡检、应急通信等场景。
+两款手机均内置高容量锰酸锂电池，支持72小时超长待机，并通过严苛环境测试（高温、低温、湿热、振动、冲击），确保在矿井复杂环境中稳定运行。
+                    </p>
+                </div>
+                
+                <!-- 核心优势 -->
+                <div class="mb-8">
+                    <h2 class="text-xl font-semibold mb-4 text-gray-200">核心优势</h2>
+                    <ul class="space-y-3">
+                        <li class="flex items-start">
+                            <i class="fa fa-check-circle text-secondary mt-1 mr-3"></i>
+                            <span class="text-gray-300">Ex ib I Mb防爆等级，适用于煤矿井下环境</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fa fa-check-circle text-secondary mt-1 mr-3"></i>
+                            <span class="text-gray-300">IP68防护等级，防尘防水，适应潮湿多尘环境</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fa fa-check-circle text-secondary mt-1 mr-3"></i>
+                            <span class="text-gray-300">支持4G/5G和井下专用无线通信，确保信号稳定</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fa fa-check-circle text-secondary mt-1 mr-3"></i>
+                            <span class="text-gray-300">内置多种传感器，可实时监测环境参数</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fa fa-check-circle text-secondary mt-1 mr-3"></i>
+                            <span class="text-gray-300">大容量电池，支持16小时连续工作，待机72小时</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- 操作按钮 -->
+                <div class="flex flex-wrap gap-4">
+                    <a href="#contactSection" class="px-6 py-3 bg-secondary hover:bg-secondary/80 text-white rounded-lg transition-all flex items-center font-medium">
+                        <i class="fa fa-envelope mr-2"></i> 咨询报价
+                    </a>
+                    <a href="/手机手册.pdf" target="_blank" class="px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-all flex items-center font-medium">
+                        <i class="fa fa-download mr-2"></i> 下载手册
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- 技术参数 -->
+        <section class="mb-16 opacity-0 transform translate-y-10 transition-all duration-1000" id="paramsSection">
+            <div class="bg-dark-light/60 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-secondary/20">
+                <h2 class="text-[clamp(1.5rem,3vw,2rem)] font-bold mb-6 flex items-center">
+                    <span class="inline-block w-10 h-10 rounded-full bg-secondary/20 flex items-center justify-center mr-3">
+                        <i class="fa fa-cogs text-secondary"></i>
+                    </span>
+                    技术参数
+                    <div class="ml-4 h-1 flex-grow bg-gradient-to-r from-secondary to-transparent"></div>
+                </h2>
+                
+                <div class="overflow-x-auto">
+                    <table class="w-full min-w-[800px] border-collapse">
+                        <thead>
+                            <tr class="border-b border-secondary/30">
+                                <th class="py-4 px-6 text-left text-gray-200 font-semibold">参数类别</th>
+                                <th class="py-4 px-6 text-left text-gray-200 font-semibold">参数值</th>
+                                <th class="py-4 px-6 text-left text-gray-200 font-semibold">参数说明</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b border-gray-800 hover:bg-dark/40 transition-colors">
+                                <td class="py-4 px-6 text-gray-300 font-medium">防爆标志</td>
+                                <td class="py-4 px-6 text-gray-400">Ex ib I Mb</td>
+                                <td class="py-4 px-6 text-gray-400">煤矿用本安型设备</td>
+                            </tr>
+                            <tr class="border-b border-gray-800 hover:bg-dark/40 transition-colors">
+                                <td class="py-4 px-6 text-gray-300 font-medium">防护等级</td>
+                                <td class="py-4 px-6 text-gray-400">IP68</td>
+                                <td class="py-4 px-6 text-gray-400">完全防尘，可在1.5米水深浸泡30分钟</td>
+                            </tr>
+                            <tr class="border-b border-gray-800 hover:bg-dark/40 transition-colors">
+                                <td class="py-4 px-6 text-gray-300 font-medium">网络制式</td>
+                                <td class="py-4 px-6 text-gray-400">4G/5G + 矿用无线通信</td>
+                                <td class="py-4 px-6 text-gray-400">支持公网和井下专用网络切换</td>
+                            </tr>
+                            <tr class="border-b border-gray-800 hover:bg-dark/40 transition-colors">
+                                <td class="py-4 px-6 text-gray-300 font-medium">处理器</td>
+                                <td class="py-4 px-6 text-gray-400">八核 2.2GHz</td>
+                                <td class="py-4 px-6 text-gray-400">高性能低功耗处理器</td>
+                            </tr>
+                            <tr class="border-b border-gray-800 hover:bg-dark/40 transition-colors">
+                                <td class="py-4 px-6 text-gray-300 font-medium">内存存储</td>
+                                <td class="py-4 px-6 text-gray-400">6GB RAM + 128GB ROM</td>
+                                <td class="py-4 px-6 text-gray-400">支持128GB扩展存储</td>
+                            </tr>
+                            <tr class="border-b border-gray-800 hover:bg-dark/40 transition-colors">
+                                <td class="py-4 px-6 text-gray-300 font-medium">显示屏</td>
+                                <td class="py-4 px-6 text-gray-400">5.5英寸 AMOLED 触摸屏</td>
+                                <td class="py-4 px-6 text-gray-400">支持手套操作，阳光下可视</td>
+                            </tr>
+                            <tr class="border-b border-gray-800 hover:bg-dark/40 transition-colors">
+                                <td class="py-4 px-6 text-gray-300 font-medium">电池容量</td>
+                                <td class="py-4 px-6 text-gray-400">5000mAh 本安型电池</td>
+                                <td class="py-4 px-6 text-gray-400">支持18W本安型快充</td>
+                            </tr>
+                            <tr class="hover:bg-dark/40 transition-colors">
+                                <td class="py-4 px-6 text-gray-300 font-medium">环境监测</td>
+                                <td class="py-4 px-6 text-gray-400">甲烷、温度、湿度</td>
+                                <td class="py-4 px-6 text-gray-400">内置多参数传感器</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- 功能特点 -->
+        <section class="mb-16 opacity-0 transform translate-y-10 transition-all duration-1000" id="featuresSection">
+            <div class="bg-dark-light/60 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-secondary/20">
+                <h2 class="text-[clamp(1.5rem,3vw,2rem)] font-bold mb-8 flex items-center">
+                    <span class="inline-block w-10 h-10 rounded-full bg-secondary/20 flex items-center justify-center mr-3">
+                        <i class="fa fa-star text-secondary"></i>
+                    </span>
+                    功能特点
+                    <div class="ml-4 h-1 flex-grow bg-gradient-to-r from-secondary to-transparent"></div>
+                </h2>
+                
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="space-y-6">
+                        <!-- 功能点1 -->
+                        <div class="flex feature-point" data-delay="0">
+                            <div class="w-12 h-12 rounded-full bg-secondary/20 flex items-center justify-center mr-4 flex-shrink-0 mt-1">
+                                <i class="fa fa-comments text-secondary text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-semibold text-secondary mb-2">多模式通讯</h3>
+                                <p class="text-gray-400">
+                                    支持语音通话、视频通话、短信和即时通讯功能，可在公网与井下专用网络间自动切换，
+                                    确保井上井下通讯畅通。内置降噪麦克风和大功率扬声器，适应高噪音环境。
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <!-- 功能点2 -->
+                        <div class="flex feature-point" data-delay="100">
+                            <div class="w-12 h-12 rounded-full bg-secondary/20 flex items-center justify-center mr-4 flex-shrink-0 mt-1">
+                                <i class="fa fa-map-marker text-secondary text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-semibold text-secondary mb-2">精准定位追踪</h3>
+                                <p class="text-gray-400">
+                                    集成北斗/GPS双模定位和井下UWB精确定位技术，定位精度可达1米以内，
+                                    支持实时位置上报、历史轨迹查询和电子围栏功能，提升井下人员安全管理水平。
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <!-- 功能点3 -->
+                        <div class="flex feature-point" data-delay="200">
+                            <div class="w-12 h-12 rounded-full bg-secondary/20 flex items-center justify-center mr-4 flex-shrink-0 mt-1">
+                                <i class="fa fa-tachometer text-secondary text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-semibold text-secondary mb-2">环境参数监测</h3>
+                                <p class="text-gray-400">
+                                    内置甲烷、温度、湿度传感器，可实时监测周边环境参数，
+                                    当甲烷浓度超过安全阈值时自动报警，并向监控中心发送预警信息，
+                                    为井下作业人员提供安全警示。
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-6">
+                        <!-- 功能点4 -->
+                        <div class="flex feature-point" data-delay="300">
+                            <div class="w-12 h-12 rounded-full bg-secondary/20 flex items-center justify-center mr-4 flex-shrink-0 mt-1">
+                                <i class="fa fa-bell text-secondary text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-semibold text-secondary mb-2">应急报警功能</h3>
+                                <p class="text-gray-400">
+                                    配备紧急报警按钮，长按3秒即可触发应急报警，自动向监控中心发送
+                                    包含位置信息的求救信号，并启动声光报警，便于救援人员快速定位。
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <!-- 功能点5 -->
+                        <div class="flex feature-point" data-delay="400">
+                            <div class="w-12 h-12 rounded-full bg-secondary/20 flex items-center justify-center mr-4 flex-shrink-0 mt-1">
+                                <i class="fa fa-camera text-secondary text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-semibold text-secondary mb-2">高清摄像取证</h3>
+                                <p class="text-gray-400">
+                                    前置800万像素、后置1600万像素摄像头，支持井下低光照环境拍摄，
+                                    可实时传输现场图像，便于远程指导和事故取证，配备LED补光灯和激光对焦。
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <!-- 功能点6 -->
+                        <div class="flex feature-point" data-delay="500">
+                            <div class="w-12 h-12 rounded-full bg-secondary/20 flex items-center justify-center mr-4 flex-shrink-0 mt-1">
+                                <i class="fa fa-shield text-secondary text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-semibold text-secondary mb-2">坚固耐用设计</h3>
+                                <p class="text-gray-400">
+                                    采用高强度工程塑料和防摔结构设计，通过1.5米防跌落测试，
+                                    表面特殊涂层处理，防刮耐磨，可在-20℃至+60℃环境温度下正常工作。
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 应用场景 -->
+        <section class="mb-16 opacity-0 transform translate-y-10 transition-all duration-1000" id="applicationSection">
+            <div class="bg-dark-light/60 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-secondary/20">
+                <h2 class="text-[clamp(1.5rem,3vw,2rem)] font-bold mb-8 flex items-center">
+                    <span class="inline-block w-10 h-10 rounded-full bg-secondary/20 flex items-center justify-center mr-3">
+                        <i class="fa fa-map-o text-secondary"></i>
+                    </span>
+                    应用场景
+                    <div class="ml-4 h-1 flex-grow bg-gradient-to-r from-secondary to-transparent"></div>
+                </h2>
+                
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="bg-dark/60 rounded-xl p-5 border border-secondary/20 card-hover">
+                        <div class="w-12 h-12 rounded-full bg-secondary/20 flex items-center justify-center mb-4">
+                            <i class="fa fa-users text-secondary text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-secondary mb-3">井下人员通讯</h3>
+                        <p class="text-gray-400">
+                            实现井下作业人员之间、井下与地面指挥中心的实时通讯，
+                            便于工作协调、指令传达和应急联络，提高工作效率。
+                        </p>
+                    </div>
+                    
+                    <div class="bg-dark/60 rounded-xl p-5 border border-secondary/20 card-hover">
+                        <div class="w-12 h-12 rounded-full bg-secondary/20 flex items-center justify-center mb-4">
+                            <i class="fa fa-ambulance text-secondary text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-secondary mb-3">应急救援指挥</h3>
+                        <p class="text-gray-400">
+                            在发生矿难等紧急情况时，提供精准定位和实时通讯支持，
+                            辅助救援人员制定救援方案，提高救援效率和成功率。
+                        </p>
+                    </div>
+                    
+                    <div class="bg-dark/60 rounded-xl p-5 border border-secondary/20 card-hover">
+                        <div class="w-12 h-12 rounded-full bg-secondary/20 flex items-center justify-center mb-4">
+                            <i class="fa fa-line-chart text-secondary text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-secondary mb-3">安全监控管理</h3>
+                        <p class="text-gray-400">
+                            通过实时位置追踪和环境监测数据，实现对井下人员的安全监控，
+                            防止人员进入危险区域，及时发现和处理安全隐患。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 设备性能对比 -->
+        <section class="mb-16 opacity-0 transform translate-y-10 transition-all duration-1000" id="comparisonSection">
+            <div class="bg-dark-light/60 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-secondary/20">
+                <h2 class="text-[clamp(1.5rem,3vw,2rem)] font-bold mb-8 flex items-center">
+                    <span class="inline-block w-10 h-10 rounded-full bg-secondary/20 flex items-center justify-center mr-3">
+                        <i class="fa fa-balance-scale text-secondary"></i>
+                    </span>
+                    性能对比
+                    <div class="ml-4 h-1 flex-grow bg-gradient-to-r from-secondary to-transparent"></div>
+                </h2>
+                
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="h-80">
+                        <canvas id="performanceChart"></canvas>
+                    </div>
+                    
+                    <div class="space-y-6">
+                        <div class="bg-dark/60 rounded-xl p-5 border border-secondary/20">
+                            <h3 class="text-xl font-semibold text-secondary mb-3">与传统矿用通讯设备对比</h3>
+                            <ul class="space-y-3 text-gray-300">
+                                <li class="flex items-start">
+                                    <i class="fa fa-arrow-right text-secondary mt-1 mr-2"></i>
+                                    <span>集成多种功能，替代对讲机、定位器、环境检测仪等多种设备</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-arrow-right text-secondary mt-1 mr-2"></i>
+                                    <span>采用智能操作系统，支持应用扩展和系统升级，功能可定制</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-arrow-right text-secondary mt-1 mr-2"></i>
+                                    <span>电池续航提升60%，充电速度提升50%，减少充电次数</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-arrow-right text-secondary mt-1 mr-2"></i>
+                                    <span>通信距离提升30%，穿透能力增强，适应复杂井下环境</span>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-dark/60 rounded-xl p-4 border border-gray-700/50 text-center">
+                                <div class="text-3xl font-bold text-secondary mb-1">1.5米</div>
+                                <div class="text-gray-400 text-sm">防跌落高度</div>
+                            </div>
+                            <div class="bg-dark/60 rounded-xl p-4 border border-gray-700/50 text-center">
+                                <div class="text-3xl font-bold text-secondary mb-1">16小时</div>
+                                <div class="text-gray-400 text-sm">连续工作时间</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 咨询区域 -->
+        <section class="mb-16 opacity-0 transform translate-y-10 transition-all duration-1000" id="contactSection">
+            <div class="bg-dark-light/60 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-secondary/20">
+                <h2 class="text-[clamp(1.5rem,3vw,2rem)] font-bold mb-8 flex items-center">
+                    <span class="inline-block w-10 h-10 rounded-full bg-secondary/20 flex items-center justify-center mr-3">
+                        <i class="fa fa-envelope text-secondary"></i>
+                    </span>
+                    咨询与支持
+                    <div class="ml-4 h-1 flex-grow bg-gradient-to-r from-secondary to-transparent"></div>
+                </h2>
+                
+                <div class="grid md:grid-cols-2 gap-8">
+                    <form class="space-y-4">
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <label for="name" class="block text-gray-300 mb-2 text-sm">联系人</label>
+                                <input type="text" id="name" class="w-full px-4 py-2 bg-dark border border-gray-700 rounded-lg text-gray-200 focus:outline-none focus:border-secondary transition-colors" placeholder="请输入您的姓名">
+                            </div>
+                            <div>
+                                <label for="phone" class="block text-gray-300 mb-2 text-sm">联系电话</label>
+                                <input type="tel" id="phone" class="w-full px-4 py-2 bg-dark border border-gray-700 rounded-lg text-gray-200 focus:outline-none focus:border-secondary transition-colors" placeholder="请输入您的电话">
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label for="company" class="block text-gray-300 mb-2 text-sm">公司名称</label>
+                            <input type="text" id="company" class="w-full px-4 py-2 bg-dark border border-gray-700 rounded-lg text-gray-200 focus:outline-none focus:border-secondary transition-colors" placeholder="请输入您的公司名称">
+                        </div>
+                        
+                        <div>
+                            <label for="need" class="block text-gray-300 mb-2 text-sm">需求类型</label>
+                            <select id="need" class="w-full px-4 py-2 bg-dark border border-gray-700 rounded-lg text-gray-200 focus:outline-none focus:border-secondary transition-colors">
+                                <option value="">请选择需求类型</option>
+                                <option value="purchase">采购咨询</option>
+                                <option value="tech">技术参数咨询</option>
+                                <option value="demo">申请产品演示</option>
+                                <option value="custom">定制化需求</option>
+                                <option value="other">其他需求</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label for="message" class="block text-gray-300 mb-2 text-sm">详细需求</label>
+                            <textarea id="message" rows="4" class="w-full px-4 py-2 bg-dark border border-gray-700 rounded-lg text-gray-200 focus:outline-none focus:border-secondary transition-colors" placeholder="请描述您的具体需求、应用场景等信息"></textarea>
+                        </div>
+                        
+                        <button type="submit" class="w-full md:w-auto px-6 py-3 bg-secondary hover:bg-secondary/80 text-white rounded-lg transition-all flex items-center justify-center font-medium">
+                            <i class="fa fa-paper-plane mr-2"></i> 提交咨询
+                        </button>
+                    </form>
+                    
+                    <div>
+                        <div class="bg-dark/60 rounded-xl p-6 border border-gray-700/50 mb-6">
+                            <h3 class="text-xl font-semibold text-secondary mb-4">技术参数查询</h3>
+                            <p class="text-gray-400 mb-4">
+                                如需获取完整技术参数手册或定制化解决方案，请通过以下方式联系我们
+                            </p>
+                            
+                            <ul class="space-y-4">
+                                <li class="flex items-center">
+                                    <div class="w-10 h-10 rounded-full bg-secondary/20 flex items-center justify-center mr-4">
+                                        <i class="fa fa-phone text-secondary"></i>
+                                    </div>
+                                    <span class="text-gray-300">技术咨询热线：400-888-XXXX</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <div class="w-10 h-10 rounded-full bg-secondary/20 flex items-center justify-center mr-4">
+                                        <i class="fa fa-envelope text-secondary"></i>
+                                    </div>
+                                    <span class="text-gray-300">邮箱：mining@longxiang-tech.com</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <div class="w-10 h-10 rounded-full bg-secondary/20 flex items-center justify-center mr-4">
+                                        <i class="fa fa-weixin text-secondary"></i>
+                                    </div>
+                                    <span class="text-gray-300">微信：LongXiangTech</span>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div class="bg-dark/60 rounded-xl p-6 border border-secondary/30">
+                            <h3 class="text-xl font-semibold text-secondary mb-4">服务承诺</h3>
+                            <p class="text-gray-400 mb-4">
+                                我们提供7×24小时技术支持，产品质保2年，终身维护，
+                                全国范围内48小时到场服务响应，确保设备稳定运行。
+                            </p>
+                            <div class="flex items-center text-gray-300">
+                                <i class="fa fa-check-circle text-secondary mr-2"></i>
+                                <span>免费现场安装调试与操作培训</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 相关产品推荐 -->
+        <section class="opacity-0 transform translate-y-10 transition-all duration-1000" id="relatedSection">
+            <h2 class="text-[clamp(1.5rem,3vw,2rem)] font-bold mb-8 flex items-center justify-center text-center">
+                <span class="inline-block w-10 h-10 rounded-full bg-secondary/20 flex items-center justify-center mr-3">
+                    <i class="fa fa-th text-secondary"></i>
+                </span>
+                相关产品推荐
+            </h2>
+            
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- 相关产品1 -->
+                <div class="bg-dark-light/60 backdrop-blur-sm rounded-xl overflow-hidden border border-gray-700/50 card-hover">
+                    <div class="h-48 overflow-hidden">
+                        <img src="images/摄像仪.png" alt="矿用本安型摄像仪" class="w-full h-full object-contain transition-transform duration-700 hover:scale-110">
+                    </div>
+                    <div class="p-5">
+                        <h3 class="text-xl font-bold text-primary mb-2">矿用本安型摄像仪</h3>
+                        <p class="text-gray-400 text-sm mb-4">隔爆型高清监控设备，适应低光照、多粉尘环境，为井下安全生产提供实时可视化监控。</p>
+                        <a href="#" class="inline-block px-4 py-2 bg-primary/20 hover:bg-primary/30 text-primary rounded-lg border border-primary/40 transition-all text-sm">
+                            查看详情 <i class="fa fa-angle-right ml-1"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- 相关产品2 -->
+                <div class="bg-dark-light/60 backdrop-blur-sm rounded-xl overflow-hidden border border-gray-700/50 card-hover">
+                    <div class="h-48 overflow-hidden">
+                        <img src="images/AI视频监管平台.png" alt="AI视频安全监管平台" class="w-full h-full object-contain transition-transform duration-700 hover:scale-110">
+                    </div>
+                    <div class="p-5">
+                        <h3 class="text-xl font-bold text-accent mb-2">AI视频安全监管平台</h3>
+                        <p class="text-gray-400 text-sm mb-4">基于计算机视觉和深度学习技术，实现矿山作业场景的智能监控、危险预警和安全管理。</p>
+                        <a href="ai监管.html" class="inline-block px-4 py-2 bg-accent/20 hover:bg-accent/30 text-accent rounded-lg border border-accent/40 transition-all text-sm">
+                            查看详情 <i class="fa fa-angle-right ml-1"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- 相关产品3 -->
+                <div class="bg-dark-light/60 backdrop-blur-sm rounded-xl overflow-hidden border border-gray-700/50 card-hover">
+                    <div class="h-48 overflow-hidden">
+                        <img src="images/开关柜.png" alt="箱式固定式金属交流封闭开关设备" class="w-full h-full object-contain transition-transform duration-700 hover:scale-110">
+                    </div>
+                    <div class="p-5">
+                        <h3 class="text-xl font-bold text-gray-300 mb-2">箱式固定式金属交流封闭开关设备</h3>
+                        <p class="text-gray-400 text-sm mb-4">用于矿山井下配电系统，具备短路、过载、漏电等保护功能，结构紧凑、防护性能优良。</p>
+                        <a href="#" class="inline-block px-4 py-2 bg-gray-700/50 hover:bg-gray-600 text-gray-300 rounded-lg border border-gray-600 transition-all text-sm">
+                            查看详情 <i class="fa fa-angle-right ml-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-dark-light py-12 border-t border-secondary/20 relative z-20">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-3 gap-8 mb-8">
+                <div>
+                    <h3 class="text-xl font-bold text-secondary mb-4 flex items-center">
+                        <i class="fa fa-microchip mr-2"></i> 鸡西龙祥新能源科技有限公司
+                    </h3>
+                    <p class="text-gray-400 mb-4">专注智能矿山技术研发，为矿业安全高效生产提供创新解决方案。</p>
+                    <div class="flex space-x-4">
+                        <a href="weixin://dl/chat?Aw-Wwang" class="w-10 h-10 rounded-full bg-dark/60 flex items-center justify-center text-secondary hover:bg-secondary/20 transition-all" title="微信联系">
+                            <i class="fa fa-weixin"></i>
+                        </a>
+                        <a href="https://weibo.com/龙煤集团" target="_blank" class="w-10 h-10 rounded-full bg-dark/60 flex items-center justify-center text-secondary hover:bg-secondary/20 transition-all" title="访问微博">
+                            <i class="fa fa-weibo"></i>
+                        </a>
+                        <a href="mailto:your_email@example.com" class="w-10 h-10 rounded-full bg-dark/60 flex items-center justify-center text-secondary hover:bg-secondary/20 transition-all" title="发送邮件">
+                            <i class="fa fa-envelope"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-200 mb-4">联系方式</h3>
+                    <ul class="space-y-3 text-gray-400">
+                        <li class="flex items-center">
+                            <i class="fa fa-map-marker w-6 text-secondary"></i>
+                            <span>鸡冠区科技创新产业园区</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fa fa-phone w-6 text-secondary"></i>
+                            <span>010-12345678</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fa fa-envelope w-6 text-secondary"></i>
+                            <span>rd@longxiang-tech.com</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fa fa-clock-o w-6 text-secondary"></i>
+                            <span>周一至周五 9:00-18:00</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-200 mb-4">快速链接</h3>
+                    <ul class="grid grid-cols-2 gap-2 text-gray-400">
+                        <li><a href="#" class="hover:text-secondary transition-colors">关于我们</a></li>
+                        <li><a href="#" class="hover:text-secondary transition-colors">产品中心</a></li>
+                        <li><a href="#" class="hover:text-secondary transition-colors">技术创新</a></li>
+                        <li><a href="#" class="hover:text-secondary transition-colors">案例展示</a></li>
+                        <li><a href="#" class="hover:text-secondary transition-colors">招贤纳士</a></li>
+                        <li><a href="#contactSection" class="hover:text-secondary transition-colors">联系我们</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="pt-8 border-t border-gray-800 text-center text-gray-500 text-sm">
+                <p>© 2025 龙祥新能源科技有限公司 技术研发部 --小姚 版权所有 | 京ICP备12345678号</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 1. 鼠标跟随粒子轨迹
+        let particles = [];
+        const maxParticles = 15;
+        
+        function createParticle(x, y) {
+            const mouseEffects = document.getElementById('mouseEffects');
+            if (!mouseEffects) return;
+            
+            const particle = document.createElement('div');
+            particle.classList.add('particle');
+            
+            const size = Math.random() * 4 + 1;
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+            particle.style.left = `${x}px`;
+            particle.style.top = `${y}px`;
+            
+            const colors = ['rgba(16, 185, 129, 0.7)', 'rgba(6, 182, 212, 0.7)', 'rgba(124, 58, 237, 0.7)'];
+            particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+            
+            mouseEffects.appendChild(particle);
+            particles.push({
+                element: particle,
+                x: x,
+                y: y,
+                size: size,
+                life: 1,
+                lifeSpeed: Math.random() * 0.02 + 0.01
+            });
+            
+            if (particles.length > maxParticles) {
+                const oldest = particles.shift();
+                oldest.element.remove();
+            }
+        }
+        
+        function updateParticles() {
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                p.life -= p.lifeSpeed;
+                
+                if (p.life <= 0) {
+                    p.element.remove();
+                    particles.splice(i, 1);
+                    continue;
+                }
+                
+                p.element.style.opacity = p.life;
+                p.element.style.transform = `translate(-50%, -50%) scale(${p.life})`;
+            }
+            
+            requestAnimationFrame(updateParticles);
+        }
+        
+        // 2. 鼠标点击波纹效果
+        function createRipple(x, y) {
+            const mouseEffects = document.getElementById('mouseEffects');
+            if (!mouseEffects) return;
+            
+            const ripple = document.createElement('div');
+            ripple.classList.add('ripple-effect', 'animate-ripple');
+            ripple.style.left = `${x}px`;
+            ripple.style.top = `${y}px`;
+            mouseEffects.appendChild(ripple);
+            
+            setTimeout(() => {
+                ripple.remove();
+            }, 1500);
+        }
+        
+        // 3. 数据流背景效果
+        function createDataLines() {
+            const container = document.getElementById('dataFlow');
+            if (!container) return;
+            container.innerHTML = '';
+            
+            const lineCount = 15;
+            
+            for (let i = 0; i < lineCount; i++) {
+                const line = document.createElement('div');
+                line.classList.add('data-line', 'animate-data-flow');
+                
+                const top = Math.random() * 100 + 'vh';
+                const width = Math.random() * 200 + 100 + 'px';
+                const delay = Math.random() * 10 + 's';
+                const angle = Math.random() * 10 - 5;
+                
+                line.style.top = top;
+                line.style.width = width;
+                line.style.animationDelay = delay;
+                line.style.transform = `rotate(${angle}deg)`;
+                line.style.background = 'linear-gradient(90deg, transparent, rgba(16, 185, 129, 0.6), transparent)';
+                
+                container.appendChild(line);
+            }
+        }
+
+        // 4. 滚动进度指示器和动画触发
+        window.addEventListener('scroll', function() {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById("scrollIndicator").style.width = scrolled + "%";
+            
+            // 滚动动画触发
+            const sections = document.querySelectorAll('section');
+            sections.forEach(section => {
+                if (section.classList.contains('animation-triggered')) return;
+                
+                const sectionTop = section.getBoundingClientRect().top;
+                const windowHeight = window.innerHeight;
+                if (sectionTop < windowHeight * 0.85) {
+                    section.classList.remove('opacity-0', 'transform', 'translate-y-10');
+                    section.classList.add('animation-triggered');
+                    
+                    // 特别处理功能特点部分的子元素动画
+                    if (section.id === 'featuresSection') {
+                        const featurePoints = section.querySelectorAll('.feature-point');
+                        featurePoints.forEach(point => {
+                            const delay = point.getAttribute('data-delay') || 0;
+                            setTimeout(() => {
+                                point.classList.add('visible');
+                            }, parseInt(delay));
+                        });
+                    }
+                }
+            });
+        });
+
+        // 5. 产品图片画廊切换
+        function initProductGallery() {
+            const thumbnails = document.querySelectorAll('.cursor-pointer');
+            const mainImg = document.getElementById('productMainImg');
+            
+            if (!mainImg || thumbnails.length === 0) return;
+            
+            thumbnails.forEach((thumbnail) => {
+                thumbnail.addEventListener('click', function() {
+                    // 切换主图
+                    const imgSrc = this.querySelector('img').src;
+                    mainImg.src = imgSrc;
+                    
+                    // 切换激活状态
+                    thumbnails.forEach(thumb => {
+                        thumb.classList.remove('border-secondary', 'opacity-100');
+                        thumb.classList.add('border-transparent', 'opacity-70');
+                    });
+                    this.classList.add('border-secondary', 'opacity-100');
+                    this.classList.remove('border-transparent', 'opacity-70');
+                });
+            });
+        }
+
+        // 6. 性能对比图表
+        function initPerformanceChart() {
+            const ctx = document.getElementById('performanceChart');
+            if (!ctx) return;
+            
+            new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['通讯距离', '电池续航', '定位精度', '防护性能', '环境适应', '功能集成'],
+                    datasets: [
+                        {
+                            label: 'KTW489矿用本安型手机',
+                            data: [90, 85, 95, 90, 85, 95],
+                            backgroundColor: 'rgba(16, 185, 129, 0.2)',
+                            borderColor: 'rgba(16, 185, 129, 1)',
+                            pointBackgroundColor: 'rgba(16, 185, 129, 1)',
+                            pointBorderColor: '#fff',
+                            pointHoverBackgroundColor: '#fff',
+                            pointHoverBorderColor: 'rgba(16, 185, 129, 1)'
+                        },
+                        {
+                            label: '传统矿用通讯设备',
+                            data: [65, 50, 60, 70, 60, 40],
+                            backgroundColor: 'rgba(100, 116, 139, 0.2)',
+                            borderColor: 'rgba(100, 116, 139, 1)',
+                            pointBackgroundColor: 'rgba(100, 116, 139, 1)',
+                            pointBorderColor: '#fff',
+                            pointHoverBackgroundColor: '#fff',
+                            pointHoverBorderColor: 'rgba(100, 116, 139, 1)'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            pointLabels: {
+                                color: '#94a3b8'
+                            },
+                            ticks: {
+                                color: '#94a3b8',
+                                backdropColor: 'transparent'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                color: '#94a3b8',
+                                padding: 15
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // 7. 移动端菜单
+        function initMobileMenu() {
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const mobileMenu = document.getElementById('mobileMenu');
+            
+            if (!mobileMenuBtn || !mobileMenu) return;
+            
+            mobileMenuBtn.addEventListener('click', function() {
+                mobileMenu.classList.toggle('hidden');
+                const icon = mobileMenuBtn.querySelector('i');
+                if (mobileMenu.classList.contains('hidden')) {
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                } else {
+                    icon.classList.remove('fa-bars');
+                    icon.classList.add('fa-times');
+                }
+            });
+        }
+
+        // 8. 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId !== '#') {
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        targetElement.scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                        
+                        // 关闭移动端菜单
+                        const mobileMenu = document.getElementById('mobileMenu');
+                        if (!mobileMenu.classList.contains('hidden')) {
+                            mobileMenu.classList.add('hidden');
+                            const icon = document.getElementById('mobileMenuBtn').querySelector('i');
+                            icon.classList.remove('fa-times');
+                            icon.classList.add('fa-bars');
+                        }
+                    }
+                }
+            });
+        });
+
+        // 9. 表单提交处理
+        document.querySelector('form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('name').value;
+            const phone = document.getElementById('phone').value;
+            const company = document.getElementById('company').value;
+            
+            if (!name || !phone || !company) {
+                alert('请填写必填项（联系人、联系电话、公司名称）');
+                return;
+            }
+            
+            alert('咨询提交成功！我们的技术顾问将尽快与您联系。');
+            this.reset();
+        });
+
+        // 页面加载完成后初始化所有效果
+        window.addEventListener('load', function() {
+            // 初始化鼠标特效
+            updateParticles();
+            document.addEventListener('mousemove', (e) => {
+                if (Math.random() > 0.7) {
+                    createParticle(e.clientX, e.clientY);
+                }
+            });
+            document.addEventListener('click', (e) => {
+                createRipple(e.clientX, e.clientY);
+            });
+            
+            // 初始化数据流背景
+            createDataLines();
+            
+            // 初始化产品图片画廊
+            initProductGallery();
+            
+            // 初始化性能对比图表
+            initPerformanceChart();
+            
+            // 初始化移动端菜单
+            initMobileMenu();
+            
+            // 触发初始动画
+            setTimeout(() => {
+                document.getElementById('paramsSection').classList.remove('opacity-0', 'transform', 'translate-y-10');
+            }, 300);
+            
+            setTimeout(() => {
+                document.getElementById('featuresSection').classList.remove('opacity-0', 'transform', 'translate-y-10');
+                // 手动触发功能点动画
+                const featurePoints = document.querySelectorAll('.feature-point');
+                featurePoints.forEach(point => {
+                    const delay = point.getAttribute('data-delay') || 0;
+                    setTimeout(() => {
+                        point.classList.add('visible');
+                    }, parseInt(delay));
+                });
+            }, 600);
+            
+            setTimeout(() => {
+                document.getElementById('applicationSection').classList.remove('opacity-0', 'transform', 'translate-y-10');
+            }, 900);
+            
+            setTimeout(() => {
+                document.getElementById('comparisonSection').classList.remove('opacity-0', 'transform', 'translate-y-10');
+            }, 1200);
+            
+            setTimeout(() => {
+                document.getElementById('contactSection').classList.remove('opacity-0', 'transform', 'translate-y-10');
+            }, 1500);
+            
+            setTimeout(() => {
+                document.getElementById('relatedSection').classList.remove('opacity-0', 'transform', 'translate-y-10');
+            }, 1800);
+        });
+    </script>
+</body>
+</html>
