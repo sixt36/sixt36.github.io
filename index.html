@@ -18,7 +18,8 @@
     <title>智能矿山技术研发部</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+    <!-- Chart.js 延迟加载 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js" defer></script>
     
     <!-- 配置Tailwind自定义主题 -->
     <script>
@@ -132,6 +133,7 @@
                 border-radius: 50%;
                 z-index: 9999;
                 transform: translate(-50%, -50%);
+                will-change: transform, opacity; /* 优化动画性能 */
             }
             .ripple-effect {
                 position: fixed;
@@ -148,11 +150,13 @@
                 background: linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.6), transparent);
                 height: 1px;
                 transform-origin: left center;
+                will-change: transform; /* 优化动画性能 */
             }
             .data-point {
                 position: absolute;
                 border-radius: 50%;
                 animation: pulse 3s infinite alternate;
+                will-change: transform, opacity; /* 优化动画性能 */
             }
             @keyframes pulse {
                 0% { transform: scale(0.6); opacity: 0.4; }
@@ -417,116 +421,491 @@
                 重点研发项目
             </h2>
             
+            <!-- 1. 节能类 -->
+            <div class="mb-12">
+                <h3 class="text-xl font-bold mb-6 flex items-center text-secondary">
+                    <i class="fa fa-leaf mr-3"></i>
+                    1. 节能类
+                </h3>
             <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- 项目1 -->
-                <div class="bg-dark-light/60 backdrop-blur-sm rounded-xl overflow-hidden border border-primary/20 card-hover">
+                    <!-- 节能类项目1 -->
+                    <div class="bg-dark-light/60 backdrop-blur-sm rounded-xl overflow-hidden border border-secondary/20 card-hover">
                     <div class="h-48 overflow-hidden">
-                        <a href="sxt.html">
-                        <img src="images/摄像仪.png" alt="矿用本安型摄像仪" class="w-full h-full object-contain transition-transform duration-700 hover:scale-110">
+                            <a href="znjnz.html">
+                            <img src="images/智能节能装置.png" alt="智能节能装置" class="w-full h-full object-contain transition-transform duration-700 hover:scale-110">
                         </a>
                     </div>
                     <div class="p-5">
-                        <h3 class="text-xl font-bold text-primary mb-2">矿用本安型摄像仪</h3>
-                        <p class="text-gray-400 text-sm mb-4">隔爆型高清监控设备，适应低光照、多粉尘环境，为井下安全生产提供实时可视化监控。</p>
+                            <h3 class="text-xl font-bold text-secondary mb-2">智能节能装置</h3>
+                            <p class="text-gray-400 text-sm mb-4">区别于变频器节能，在不降低设备电机转速的前提下达到节能效果，并具有变频器同等调速能力。采用模糊式调节法，根据负载情况选择最适宜的工作曲线，通过变流器+核心控制器提供电机定子最适宜的定子电压，使用工况更全面。</p>
                         <div class="flex justify-between items-center">
-                            <span class="text-xs text-gray-500">技术成熟度: 95%</span>
+                                <span class="text-xs text-gray-500">技术成熟度: 90%</span>
                             <div class="w-2/3 bg-gray-700 rounded-full h-1.5">
-                                <div class="bg-primary h-1.5 rounded-full" style="width: 95%"></div>
+                                    <div class="bg-secondary h-1.5 rounded-full" style="width: 90%"></div>
                             </div>
                         </div>
                     </div>
                 </div>
                 
-                <!-- 项目2 -->
+                    <!-- 节能类项目2 -->
                 <div class="bg-dark-light/60 backdrop-blur-sm rounded-xl overflow-hidden border border-secondary/20 card-hover">
                     <div class="h-48 overflow-hidden">
-                        <a href="/jbtf.html">
-                        <img src="images/风机.png" alt="局部通风机系统" class="w-full h-full object-contain transition-transform duration-700 hover:scale-110">
+                            <a href="rybjnz.html">
+                            <img src="images/乳化液泵节能装置.png" alt="乳化液泵节能装置" class="w-full h-full object-contain transition-transform duration-700 hover:scale-110">
                         </a>
                     </div>
                     <div class="p-5">
-                        <h3 class="text-xl font-bold text-secondary mb-2">智能局部通风机系统</h3>
-                        <p class="text-gray-400 text-sm mb-4">智能型通风设备，可根据井下环境自动调节风量，确保作业面空气质量，保障人员健康安全。</p>
+                            <h3 class="text-xl font-bold text-secondary mb-2">乳化液泵节能装置</h3>
+                            <p class="text-gray-400 text-sm mb-4">通过节能装置对乳化液泵站进行实时数据采集与远程监控，可在地面调度中心集中显示电流、电压、温度等关键参数。采用变频调速技术，根据实际用液需求动态调节电机转速，系统集成多级安全保护机制，通过压力传感器与电磁卸荷阀协同控制，实现工频泵与变频泵智能联动，避免无效供液，提升能源利用率。</p>
                         <div class="flex justify-between items-center">
-                            <span class="text-xs text-gray-500">技术成熟度: 90%</span>
+                                <span class="text-xs text-gray-500">技术成熟度: 89%</span>
                             <div class="w-2/3 bg-gray-700 rounded-full h-1.5">
-                                <div class="bg-secondary h-1.5 rounded-full" style="width: 90%"></div>
+                                    <div class="bg-secondary h-1.5 rounded-full" style="width: 89%"></div>
                             </div>
                         </div>
                     </div>
                 </div>
                 
-                <!-- 项目3 -->
-                <div class="bg-dark-light/60 backdrop-blur-sm rounded-xl overflow-hidden border border-accent/20 card-hover">
+                    <!-- 节能类项目3 -->
+                    <div class="bg-dark-light/60 backdrop-blur-sm rounded-xl overflow-hidden border border-secondary/20 card-hover">
                     <div class="h-48 overflow-hidden">
-                        <a href="/kbckzx.html">
-                        <img src="/images/可编程控制箱.png" alt="矿用可编程控制箱" class="w-full h-full object-contain transition-transform duration-700 hover:scale-110">
+                            <a href="zsfb.html">
+                            <img src="images/主扇变频电控远程控制系统.png" alt="主扇变频电控远程控制系统" class="w-full h-full object-contain transition-transform duration-700 hover:scale-110">
                         </a>
                     </div>
                     <div class="p-5">
-                        <h3 class="text-xl font-bold text-accent mb-2">矿用隔爆兼本质安全型可编程控制箱</h3>
-                        <p class="text-gray-400 text-sm mb-4">适用于大小水泵、皮带运输、集中控制等场景，具备高可靠性和抗干扰能力。</p>
+                            <h3 class="text-xl font-bold text-secondary mb-2">主扇变频电控远程控制系统</h3>
+                            <p class="text-gray-400 text-sm mb-4">集成煤矿综合自动化平台，实现主扇风机远程监控与控制。系统实时采集风机运行参数，通过3D可视化界面展示设备状态，支持地面调度中心远程启动、停止、调节风量等操作，实现节能运行。</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs text-gray-500">技术成熟度: 91%</span>
+                                <div class="w-2/3 bg-gray-700 rounded-full h-1.5">
+                                    <div class="bg-secondary h-1.5 rounded-full" style="width: 91%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 节能类项目4 -->
+                    <div class="bg-dark-light/60 backdrop-blur-sm rounded-xl overflow-hidden border border-secondary/20 card-hover">
+                        <div class="h-48 overflow-hidden">
+                            <a href="yfjjnz.html">
+                            <img src="images/压风机节能装置.png" alt="压风机节能装置" class="w-full h-full object-contain transition-transform duration-700 hover:scale-110">
+                            </a>
+                        </div>
+                        <div class="p-5">
+                            <h3 class="text-xl font-bold text-secondary mb-2">压风机节能装置</h3>
+                            <p class="text-gray-400 text-sm mb-4">空压站监测大屏系统，实时采集空压机运行数据（压力、电流、电压、温度、功率等），通过3D等轴测图可视化展示空压系统结构。系统监控设备运行状态，实时报警，支持历史数据查询和趋势分析。配备累计统计功能，通过智能控制优化空压机运行效率，实现节能降耗。</p>
                         <div class="flex justify-between items-center">
                             <span class="text-xs text-gray-500">技术成熟度: 88%</span>
                             <div class="w-2/3 bg-gray-700 rounded-full h-1.5">
-                                <div class="bg-accent h-1.5 rounded-full" style="width: 88%"></div>
+                                    <div class="bg-secondary h-1.5 rounded-full" style="width: 88%"></div>
+                                </div>
+                            </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 
-                <!-- 项目4 -->
-                <div class="bg-dark-light/60 backdrop-blur-sm rounded-xl overflow-hidden border border-gray-600/50 card-hover">
-                    <div class="h-48 overflow-hidden">
-                        <a href="/pb.html">
-                        <img src="/images/皮保.png" alt="矿用带式输送机保护装置主机" class="w-full h-full object-contain transition-transform duration-700 hover:scale-110">
-                        </a>
+            <!-- 2. 安全监控类 -->
+            <div class="mb-12">
+                <h3 class="text-xl font-bold mb-6 flex items-center text-primary">
+                    <i class="fa fa-shield mr-3"></i>
+                    2. 安全监控类
+                </h3>
+                <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- 安全监控类项目1 -->
+                    <div class="bg-dark-light/60 backdrop-blur-sm rounded-xl overflow-hidden border border-primary/20 card-hover">
+                        <div class="h-48 overflow-hidden">
+                            <a href="/ai.html" target="_self">
+                            <img src="images/AI视频监管平台.png" alt="AI视频管控" class="w-full h-full object-contain transition-transform duration-700 hover:scale-110">
+                            </a>
+                        </div>
+                        <div class="p-5">
+                            <h3 class="text-xl font-bold text-primary mb-2">AI视频管控</h3>
+                            <p class="text-gray-400 text-sm mb-4">基于计算机视觉和深度学习技术，实现矿山作业场景的智能监控、危险预警和安全管理。</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs text-gray-500">技术成熟度: 78%</span>
+                                <div class="w-2/3 bg-gray-700 rounded-full h-1.5">
+                                    <div class="bg-primary h-1.5 rounded-full" style="width: 78%"></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="p-5">
-                        <h3 class="text-xl font-bold text-gray-300 mb-2">矿用带式输送机保护装置主机</h3>
-                        <p class="text-gray-400 text-sm mb-4">实时监测输送机运行状态，具备跑偏、打滑、撕裂、温度等多重保护功能，确保运输系统安全运行。</p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-xs text-gray-500">技术成熟度: 85%</span>
-                            <div class="w-2/3 bg-gray-700 rounded-full h-1.5">
-                                <div class="bg-gray-300 h-1.5 rounded-full" style="width: 85%"></div>
+                    
+                    <!-- 安全监控类项目2 -->
+                    <div class="bg-dark-light/60 backdrop-blur-sm rounded-xl overflow-hidden border border-primary/20 card-hover">
+                        <div class="h-48 overflow-hidden">
+                            <a href="ggxjjqr.html">
+                            <img src="images/挂轨式巡检机器人.png" alt="挂轨式巡检机器人" class="w-full h-full object-contain transition-transform duration-700 hover:scale-110">
+                            </a>
+                        </div>
+                        <div class="p-5">
+                            <h3 class="text-xl font-bold text-primary mb-2">挂轨式巡检机器人</h3>
+                            <p class="text-gray-400 text-sm mb-4">轨道悬挂式自动化巡检设备，采用模块化设计，配备多传感器融合系统。通过轨道系统实现自主移动，对井下环境、设备状态进行实时监测和数据采集，实现设备故障预警、环境参数监测、安全巡检等功能。</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs text-gray-500">技术成熟度: 85%</span>
+                                <div class="w-2/3 bg-gray-700 rounded-full h-1.5">
+                                    <div class="bg-primary h-1.5 rounded-full" style="width: 85%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 安全监控类项目3 -->
+                    <div class="bg-dark-light/60 backdrop-blur-sm rounded-xl overflow-hidden border border-primary/20 card-hover">
+                        <div class="h-48 overflow-hidden">
+                            <a href="sj.html">
+                            <img src="images/手机(1).png" alt="矿用本安型手机" class="w-full h-full object-contain transition-transform duration-700 hover:scale-110">
+                            </a>
+                        </div>
+                        <div class="p-5">
+                            <h3 class="text-xl font-bold text-primary mb-2">矿用本安型手机</h3>
+                            <p class="text-gray-400 text-sm mb-4">专为井下作业设计的防爆通讯设备，支持语音通话、视频通讯和定位功能，确保井下人员实时联络与安全管理。</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs text-gray-500">技术成熟度: 91%</span>
+                                <div class="w-2/3 bg-gray-700 rounded-full h-1.5">
+                                    <div class="bg-primary h-1.5 rounded-full" style="width: 91%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 安全监控类项目4 -->
+                    <div class="bg-dark-light/60 backdrop-blur-sm rounded-xl overflow-hidden border border-primary/20 card-hover">
+                        <div class="h-48 overflow-hidden">
+                            <a href="/pb.html">
+                                <img src="images/皮保.png" alt="带式输送机" class="w-full h-full object-contain transition-transform duration-700 hover:scale-110">
+                            </a>
+                        </div>
+                        <div class="p-5">
+                            <h3 class="text-xl font-bold text-primary mb-2">带式输送机</h3>
+                            <p class="text-gray-400 text-sm mb-4">实时监测输送机运行状态，具备跑偏、打滑、撕裂、温度等多重保护功能，确保运输系统安全运行。</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs text-gray-500">技术成熟度: 85%</span>
+                                <div class="w-2/3 bg-gray-700 rounded-full h-1.5">
+                                    <div class="bg-primary h-1.5 rounded-full" style="width: 85%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 安全监控类项目5 -->
+                    <div class="bg-dark-light/60 backdrop-blur-sm rounded-xl overflow-hidden border border-primary/20 card-hover">
+                        <div class="h-48 overflow-hidden">
+                            <a href="sxt.html">
+                                <img src="images/摄像仪.png" alt="矿用本安型摄像仪" class="w-full h-full object-contain transition-transform duration-700 hover:scale-110">
+                            </a>
+                        </div>
+                        <div class="p-5">
+                            <h3 class="text-xl font-bold text-primary mb-2">矿用本安型摄像仪</h3>
+                            <p class="text-gray-400 text-sm mb-4">面向井下危险场景的本安级视频采集终端，内置高清成像、红外补光与AI分析模块，支持网络联动、巡视留痕、隐患告警，保障生产现场可视化管理。</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs text-gray-500">技术成熟度: 84%</span>
+                                <div class="w-2/3 bg-gray-700 rounded-full h-1.5">
+                                    <div class="bg-primary h-1.5 rounded-full" style="width: 84%"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 
-                <!-- 项目5 -->
-                <div class="bg-dark-light/60 backdrop-blur-sm rounded-xl overflow-hidden border border-gray-600/50 card-hover">
-    <div class="h-48 overflow-hidden">
-        <a href="/kgg.html">
-        <img src="/images/开关柜.png" alt="箱式固定式金属交流封闭开关设备" class="w-full h-full object-contain transition-transform duration-700 hover:scale-110">
-        </a>
-    </div>
-    <div class="p-5">
-        <h3 class="text-xl font-bold text-gray-300 mb-2">箱式固定式金属交流封闭开关设备</h3>
-        <p class="text-gray-400 text-sm mb-4">用于矿山井下配电系统，具备短路、过载、漏电等保护功能，结构紧凑、防护性能优良，适应恶劣工作环境。</p>
-        <div class="flex justify-between items-center">
-            <span class="text-xs text-gray-500">技术成熟度: 92%</span>
-            <div class="w-2/3 bg-gray-700 rounded-full h-1.5">
-                <div class="bg-gray-300 h-1.5 rounded-full" style="width: 92%"></div>
+            <!-- 3. 自动化控制类 -->
+            <div class="mb-12">
+                <h3 class="text-xl font-bold mb-6 flex items-center text-accent">
+                    <i class="fa fa-cogs mr-3"></i>
+                    3. 自动化控制类
+                </h3>
+                <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- 自动化控制类项目1 -->
+                    <div class="bg-dark-light/60 backdrop-blur-sm rounded-xl overflow-hidden border border-accent/20 card-hover">
+                        <div class="h-48 overflow-hidden">
+                            <a href="jbtf.html">
+                            <img src="images/双电源双变频.png" alt="矿用局部通风双电源双变频远程控制" class="w-full h-full object-contain transition-transform duration-700 hover:scale-110">
+                            </a>
+                        </div>
+                        <div class="p-5">
+                            <h3 class="text-xl font-bold text-accent mb-2">矿用局部通风双电源双变频远程控制</h3>
+                            <p class="text-gray-400 text-sm mb-4">采用双电源供电设计，确保局部通风机系统供电可靠性。集成双变频控制技术，实现主备风机自动切换和智能调速。系统支持远程监控与控制，实时采集风机运行参数，根据井下环境需求自动调节风量。</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs text-gray-500">技术成熟度: 92%</span>
+                                <div class="w-2/3 bg-gray-700 rounded-full h-1.5">
+                                    <div class="bg-accent h-1.5 rounded-full" style="width: 92%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 自动化控制类项目2 -->
+                    <div class="bg-dark-light/60 backdrop-blur-sm rounded-xl overflow-hidden border border-accent/20 card-hover">
+                        <div class="h-48 overflow-hidden">
+                            <a href="jbtfkg.html">
+                            <img src="images/通风机开关.png" alt="矿用局部通风机开关远程控制" class="w-full h-full object-contain transition-transform duration-700 hover:scale-110">
+                            </a>
+                        </div>
+                        <div class="p-5">
+                            <h3 class="text-xl font-bold text-accent mb-2">矿用局部通风机开关远程控制</h3>
+                            <p class="text-gray-400 text-sm mb-4">实现局部通风机开关的远程集中控制，支持地面调度中心对井下多台局部通风机进行统一管理。系统实时监测通风机运行状态，支持远程启动、停止、复位等操作，具备故障报警、状态反馈、操作记录等功能。</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs text-gray-500">技术成熟度: 88%</span>
+                                <div class="w-2/3 bg-gray-700 rounded-full h-1.5">
+                                    <div class="bg-accent h-1.5 rounded-full" style="width: 88%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 自动化控制类项目3 -->
+                    <div class="bg-dark-light/60 backdrop-blur-sm rounded-xl overflow-hidden border border-accent/20 card-hover">
+                        <div class="h-48 overflow-hidden">
+                            <a href="ydbdz.html">
+                            <img src="images/真空开关(1).png" alt="矿用隔爆兼本安移动变电站用高压永磁真空开关/隔爆兼本安低压侧保护箱" class="w-full h-full object-contain transition-transform duration-700 hover:scale-110">
+                            </a>
+                        </div>
+                        <div class="p-5">
+                            <h3 class="text-xl font-bold text-accent mb-2">矿用隔爆兼本安移动变电站用高压永磁真空开关/隔爆兼本安低压侧保护箱</h3>
+                            <p class="text-gray-400 text-sm mb-4">采用永磁真空开关技术，实现移动变电站高压侧可靠分合闸控制。配备隔爆兼本安型低压侧保护箱，具备完善的保护功能，保障移动变电站安全运行，适应煤矿井下移动供电需求。</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs text-gray-500">技术成熟度: 90%</span>
+                                <div class="w-2/3 bg-gray-700 rounded-full h-1.5">
+                                    <div class="bg-accent h-1.5 rounded-full" style="width: 90%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 自动化控制类项目4 -->
+                    <div class="bg-dark-light/60 backdrop-blur-sm rounded-xl overflow-hidden border border-accent/20 card-hover">
+                        <div class="h-48 overflow-hidden">
+                            <a href="gsbyq.html">
+                            <img src="images/干式变压器.png" alt="干式变压器" class="w-full h-full object-contain transition-transform duration-700 hover:scale-110">
+                            </a>
+                        </div>
+                        <div class="p-5">
+                            <h3 class="text-xl font-bold text-accent mb-2">干式变压器</h3>
+                            <p class="text-gray-400 text-sm mb-4">矿用干式变压器，采用先进制造工艺，具备防火、防潮、无污染等特性。适用于煤矿井下供电系统，结构紧凑、维护方便，适应恶劣工作环境，保障供电安全可靠。</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs text-gray-500">技术成熟度: 94%</span>
+                                <div class="w-2/3 bg-gray-700 rounded-full h-1.5">
+                                    <div class="bg-accent h-1.5 rounded-full" style="width: 94%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 自动化控制类项目5 -->
+                    <div class="bg-dark-light/60 backdrop-blur-sm rounded-xl overflow-hidden border border-accent/20 card-hover">
+                        <div class="h-48 overflow-hidden">
+                            <a href="ydbdzzn.html">
+                            <img src="images/移动变电站（智能型）.png" alt="隔爆兼本安移动变电站（智能型）" class="w-full h-full object-contain transition-transform duration-700 hover:scale-110">
+                            </a>
+                        </div>
+                        <div class="p-5">
+                            <h3 class="text-xl font-bold text-accent mb-2">隔爆兼本安移动变电站（智能型）</h3>
+                            <p class="text-gray-400 text-sm mb-4">集成智能监控与控制功能的移动变电站，实时监测运行参数，支持远程监控和故障诊断。采用隔爆兼本安设计，具备完善的保护功能，适应煤矿井下移动供电需求，提升供电系统智能化水平。</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs text-gray-500">技术成熟度: 89%</span>
+                                <div class="w-2/3 bg-gray-700 rounded-full h-1.5">
+                                    <div class="bg-accent h-1.5 rounded-full" style="width: 89%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 自动化控制类项目6 -->
+                    <div class="bg-dark-light/60 backdrop-blur-sm rounded-xl overflow-hidden border border-accent/20 card-hover">
+                        <div class="h-48 overflow-hidden">
+                            <a href="gdpdg.html">
+                            <img src="images/高低压配电柜.png" alt="高低压配电柜/通信联络柜" class="w-full h-full object-contain transition-transform duration-700 hover:scale-110">
+                            </a>
+                        </div>
+                        <div class="p-5">
+                            <h3 class="text-xl font-bold text-accent mb-2">高低压配电柜/通信联络柜</h3>
+                            <p class="text-gray-400 text-sm mb-4">集成高低压配电与通信联络功能，实现供电系统与通信系统的统一管理。具备完善的保护功能，支持远程监控和操作，适应煤矿井下综合自动化系统需求，提升系统集成度和管理效率。</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs text-gray-500">技术成熟度: 91%</span>
+                                <div class="w-2/3 bg-gray-700 rounded-full h-1.5">
+                                    <div class="bg-accent h-1.5 rounded-full" style="width: 91%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 自动化控制类项目7 -->
+                    <div class="bg-dark-light/60 backdrop-blur-sm rounded-xl overflow-hidden border border-accent/20 card-hover">
+                        <div class="h-48 overflow-hidden">
+                            <a href="dsyssjjk.html">
+                            <img src="images/带式输送机工作面通讯系统.png" alt="带式输送机集控系统工作面通信控制系统" class="w-full h-full object-contain transition-transform duration-700 hover:scale-110">
+                            </a>
+                        </div>
+                        <div class="p-5">
+                            <h3 class="text-xl font-bold text-accent mb-2">带式输送机集控系统工作面通信控制系统</h3>
+                            <p class="text-gray-400 text-sm mb-4">集成带式输送机集中控制与工作面通信控制功能，实现输送系统的统一管理和工作面通信联络。系统支持远程监控、集中控制、故障诊断等功能，提升输送系统自动化水平和通信保障能力。</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs text-gray-500">技术成熟度: 86%</span>
+                                <div class="w-2/3 bg-gray-700 rounded-full h-1.5">
+                                    <div class="bg-accent h-1.5 rounded-full" style="width: 86%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 自动化控制类项目8 -->
+                    <div class="bg-dark-light/60 backdrop-blur-sm rounded-xl overflow-hidden border border-accent/20 card-hover">
+                        <div class="h-48 overflow-hidden">
+                            <a href="mksps.html">
+                                <img src="images/煤矿排水综合自动化.png" alt="煤矿排水综合自动化" class="w-full h-full object-contain transition-transform duration-700 hover:scale-110">
+                            </a>
+                        </div>
+                        <div class="p-5">
+                            <h3 class="text-xl font-bold text-accent mb-2">煤矿排水综合自动化（恒压供水、AI排水）</h3>
+                            <p class="text-gray-400 text-sm mb-4">集成恒压供水与AI智能排水系统，实现煤矿排水系统的全自动化控制。系统根据水位、压力等参数自动调节水泵运行，采用AI算法优化排水策略，支持远程监控、故障诊断、能耗分析等功能，保障矿井排水安全高效。</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs text-gray-500">技术成熟度: 87%</span>
+                                <div class="w-2/3 bg-gray-700 rounded-full h-1.5">
+                                    <div class="bg-accent h-1.5 rounded-full" style="width: 87%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 自动化控制类项目9 -->
+                    <div class="bg-dark-light/60 backdrop-blur-sm rounded-xl overflow-hidden border border-accent/20 card-hover">
+                        <div class="h-48 overflow-hidden">
+                            <a href="kbckzx.html">
+                                <img src="images/可编程控制箱.png" alt="矿用隔爆兼本质安全型可编程控制箱" class="w-full h-full object-contain transition-transform duration-700 hover:scale-110">
+                            </a>
+                        </div>
+                        <div class="p-5">
+                            <h3 class="text-xl font-bold text-accent mb-2">矿用隔爆兼本质安全型可编程控制箱</h3>
+                            <p class="text-gray-400 text-sm mb-4">集逻辑控制、现场操作与数据采集一体化设计，可为带式输送机等大型设备提供集中监控、联动控制和多路本安电源输出，满足井下综合自动化需求。</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs text-gray-500">技术成熟度: 90%</span>
+                                <div class="w-2/3 bg-gray-700 rounded-full h-1.5">
+                                    <div class="bg-accent h-1.5 rounded-full" style="width: 90%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-</div>
-                
-                <!-- 项目6 -->
-                <div class="bg-dark-light/60 backdrop-blur-sm rounded-xl overflow-hidden border border-gray-600/50 card-hover">
-                    <div class="h-48 overflow-hidden">
-                        <a href="/ai.html" target="_self">
-                        <img src="/images/AI视频监管平台.png" alt="AI视频安全监管平台" class="w-full h-full object-contain transition-transform duration-700 hover:scale-110">
-                        </a>
+            
+            <!-- 4. 矿用变频器类 -->
+            <div class="mb-12">
+                <h3 class="text-xl font-bold mb-6 flex items-center text-primary">
+                    <i class="fa fa-microchip mr-3"></i>
+                    4. 矿用变频器类
+                </h3>
+                <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- 矿用变频器类项目1：矿用隔爆兼本质安全型机车逆变器/用控制器 -->
+                    <div class="bg-dark-light/60 backdrop-blur-sm rounded-xl overflow-hidden border border-primary/20 card-hover">
+                        <div class="h-48 overflow-hidden">
+                            <a href="jcnbq.html">
+                            <img src="images/机车逆变器.png" alt="矿用隔爆兼本质安全型机车逆变器/用控制器" class="w-full h-full object-contain transition-transform duration-700 hover:scale-110">
+                            </a>
+                        </div>
+                        <div class="p-5">
+                            <h3 class="text-xl font-bold text-primary mb-2">矿用隔爆兼本质安全型机车逆变器/用控制器</h3>
+                            <p class="text-gray-400 text-sm mb-4">专为矿用电机车设计的逆变器和控制器，具备防爆特性，实现电机车的变频调速控制。系统支持平滑启动、制动控制，具备完善的保护功能，提升电机车运行效率和安全性，适应井下运输作业需求。</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs text-gray-500">技术成熟度: 88%</span>
+                                <div class="w-2/3 bg-gray-700 rounded-full h-1.5">
+                                    <div class="bg-primary h-1.5 rounded-full" style="width: 88%"></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="p-5">
-                        <h3 class="text-xl font-bold text-gray-300 mb-2">AI视频安全监管平台</h3>
-                        <p class="text-gray-400 text-sm mb-4">基于计算机视觉和深度学习技术，实现矿山作业场景的智能监控、危险预警和安全管理。</p>
-                        <div class="flex justify-between items-center">
-                            <span class="text-xs text-gray-500">技术成熟度: 78%</span>
-                            <div class="w-2/3 bg-gray-700 rounded-full h-1.5">
-                                <div class="bg-gray-300 h-1.5 rounded-full" style="width: 78%"></div>
+                    
+                    <!-- 矿用变频器类项目2：矿用隔爆兼本质安全型交流变频器（给煤机用） -->
+                    <div class="bg-dark-light/60 backdrop-blur-sm rounded-xl overflow-hidden border border-primary/20 card-hover">
+                        <div class="h-48 overflow-hidden">
+                            <a href="gmjbpq.html">
+                            <img src="images/给煤机.png" alt="矿用隔爆兼本质安全型交流变频器（给煤机用）" class="w-full h-full object-contain transition-transform duration-700 hover:scale-110">
+                            </a>
+                        </div>
+                        <div class="p-5">
+                            <h3 class="text-xl font-bold text-primary mb-2">矿用隔爆兼本质安全型交流变频器（给煤机用）</h3>
+                            <p class="text-gray-400 text-sm mb-4">专为给煤机设计的隔爆型变频器，具备防爆、防尘特性，实现给煤机电机精准调速控制。系统支持平滑启动、多段速控制，具备过载、过流、过压等保护功能，适应煤矿给煤系统恶劣工作环境。</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs text-gray-500">技术成熟度: 91%</span>
+                                <div class="w-2/3 bg-gray-700 rounded-full h-1.5">
+                                    <div class="bg-primary h-1.5 rounded-full" style="width: 91%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 矿用变频器类项目3：调度绞车变频电控 -->
+                    <div class="bg-dark-light/60 backdrop-blur-sm rounded-xl overflow-hidden border border-primary/20 card-hover">
+                        <div class="h-48 overflow-hidden">
+                            <a href="ddjc.html">
+                            <img src="images/调度绞车.png" alt="调度绞车变频电控" class="w-full h-full object-contain transition-transform duration-700 hover:scale-110">
+                            </a>
+                        </div>
+                        <div class="p-5">
+                            <h3 class="text-xl font-bold text-primary mb-2">调度绞车变频电控</h3>
+                            <p class="text-gray-400 text-sm mb-4">采用变频控制技术，实现调度绞车的平滑启动、精准调速和智能控制。系统具备过载保护、限位保护、故障诊断等功能，支持远程监控和操作，提升绞车运行效率和安全性，适用于煤矿提升运输系统。</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs text-gray-500">技术成熟度: 86%</span>
+                                <div class="w-2/3 bg-gray-700 rounded-full h-1.5">
+                                    <div class="bg-primary h-1.5 rounded-full" style="width: 86%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 矿用变频器类项目4：双机热备变频控制系统 -->
+                    <div class="bg-dark-light/60 backdrop-blur-sm rounded-xl overflow-hidden border border-primary/20 card-hover">
+                        <div class="h-48 overflow-hidden">
+                            <a href="sjrb.html">
+                            <img src="images/调度绞车.png" alt="双机热备变频控制系统" class="w-full h-full object-contain transition-transform duration-700 hover:scale-110">
+                            </a>
+                        </div>
+                        <div class="p-5">
+                            <h3 class="text-xl font-bold text-primary mb-2">双机热备变频控制系统</h3>
+                            <p class="text-gray-400 text-sm mb-4">采用双机热备冗余设计，确保变频控制系统高可靠性运行。系统具备自动切换功能，当主控系统故障时自动切换到备用系统，保障设备连续运行。适用于关键生产环节，提升系统可靠性和稳定性。</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs text-gray-500">技术成熟度: 89%</span>
+                                <div class="w-2/3 bg-gray-700 rounded-full h-1.5">
+                                    <div class="bg-primary h-1.5 rounded-full" style="width: 89%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 矿用变频器类项目5：矿用隔爆兼本质安全型组合变频器 -->
+                    <div class="bg-dark-light/60 backdrop-blur-sm rounded-xl overflow-hidden border border-primary/20 card-hover">
+                        <div class="h-48 overflow-hidden">
+                            <a href="zhbpq.html">
+                            <img src="images/组合变频器.png" alt="矿用隔爆兼本质安全型组合变频器" class="w-full h-full object-contain transition-transform duration-700 hover:scale-110">
+                            </a>
+                        </div>
+                        <div class="p-5">
+                            <h3 class="text-xl font-bold text-primary mb-2">矿用隔爆兼本质安全型组合变频器</h3>
+                            <p class="text-gray-400 text-sm mb-4">集成多路变频控制功能，可同时控制多台电机运行。采用模块化设计，具备防爆、防尘特性，适用于复杂多电机控制场景。系统支持独立控制、联动控制等多种模式，具备完善的保护功能和故障诊断能力。</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs text-gray-500">技术成熟度: 87%</span>
+                                <div class="w-2/3 bg-gray-700 rounded-full h-1.5">
+                                    <div class="bg-primary h-1.5 rounded-full" style="width: 87%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 矿用变频器类项目6：BPJ1系列矿用隔爆兼本质安全型交流变频器 -->
+                    <div class="bg-dark-light/60 backdrop-blur-sm rounded-xl overflow-hidden border border-primary/20 card-hover">
+                        <div class="h-48 overflow-hidden">
+                            <a href="bpq.html">
+                            <img src="images/变频器.png" alt="BPJ1系列矿用隔爆兼本质安全型交流变频器" class="w-full h-full object-contain transition-transform duration-700 hover:scale-110">
+                            </a>
+                        </div>
+                        <div class="p-5">
+                            <h3 class="text-xl font-bold text-primary mb-2">BPJ1系列矿用隔爆兼本质安全型交流变频器</h3>
+                            <p class="text-gray-400 text-sm mb-4">具备防爆、防尘、耐振动特性，适用于各种恶劣矿山环境，实现电机精准调速与节能运行。</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs text-gray-500">技术成熟度: 93%</span>
+                                <div class="w-2/3 bg-gray-700 rounded-full h-1.5">
+                                    <div class="bg-primary h-1.5 rounded-full" style="width: 93%"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -679,34 +1058,37 @@
     </footer>
 
     <script>
-        // 1. 鼠标跟随粒子轨迹
+        // 1. 鼠标跟随粒子轨迹（优化：减少粒子数量和频率）
         let particles = [];
-        const maxParticles = 15;
+        const maxParticles = 8; // 从15减少到8
+        let lastParticleTime = 0;
+        const particleThrottle = 50; // 限制创建频率
         
         function createParticle(x, y) {
+            const now = Date.now();
+            if (now - lastParticleTime < particleThrottle) return; // 节流
+            lastParticleTime = now;
+            
             const mouseEffects = document.getElementById('mouseEffects');
             if (!mouseEffects) return;
             
             const particle = document.createElement('div');
             particle.classList.add('particle');
             
-            const size = Math.random() * 4 + 1;
+            const size = Math.random() * 3 + 1; // 减小尺寸
             particle.style.width = `${size}px`;
             particle.style.height = `${size}px`;
             particle.style.left = `${x}px`;
             particle.style.top = `${y}px`;
             
-            const colors = ['rgba(6, 182, 212, 0.7)', 'rgba(16, 185, 129, 0.7)', 'rgba(124, 58, 237, 0.7)'];
+            const colors = ['rgba(6, 182, 212, 0.5)', 'rgba(16, 185, 129, 0.5)', 'rgba(124, 58, 237, 0.5)'];
             particle.style.background = colors[Math.floor(Math.random() * colors.length)];
             
             mouseEffects.appendChild(particle);
             particles.push({
                 element: particle,
-                x: x,
-                y: y,
-                size: size,
                 life: 1,
-                lifeSpeed: Math.random() * 0.02 + 0.01
+                lifeSpeed: Math.random() * 0.03 + 0.02 // 加快消失速度
             });
             
             if (particles.length > maxParticles) {
@@ -730,7 +1112,9 @@
                 p.element.style.transform = `translate(-50%, -50%) scale(${p.life})`;
             }
             
+            if (particles.length > 0) {
             requestAnimationFrame(updateParticles);
+            }
         }
         
         // 2. 鼠标点击波纹效果
@@ -749,22 +1133,22 @@
             }, 1500);
         }
         
-        // 3. 数据流背景效果
+        // 3. 数据流背景效果（优化：减少线条数量）
         function createDataLines() {
             const container = document.getElementById('dataFlow');
             if (!container) return;
             container.innerHTML = '';
             
-            const lineCount = 15;
+            const lineCount = 8; // 从15减少到8
             
             for (let i = 0; i < lineCount; i++) {
                 const line = document.createElement('div');
                 line.classList.add('data-line', 'animate-data-flow');
                 
                 const top = Math.random() * 100 + 'vh';
-                const width = Math.random() * 200 + 100 + 'px';
-                const delay = Math.random() * 10 + 's';
-                const angle = Math.random() * 10 - 5;
+                const width = Math.random() * 150 + 80 + 'px'; // 减小宽度
+                const delay = Math.random() * 8 + 's';
+                const angle = Math.random() * 8 - 4; // 减小角度
                 
                 line.style.top = top;
                 line.style.width = width;
@@ -807,62 +1191,63 @@
             }, 3000);
         }
         
-        // 5. 代码雨效果
+        // 5. 代码雨效果（优化：减少列数和字符，延迟加载）
         function createCodeRain() {
-            window.addEventListener('load', () => {
                 const container = document.getElementById('codeRain');
                 if (!container) return;
                 container.innerHTML = '';
                 
-                const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノ';
-                const columns = Math.floor(window.innerWidth / 20);
+            // 只在屏幕宽度较大时显示，减少性能消耗
+            if (window.innerWidth < 768) return;
+            
+            const chars = '01アイウエオカキクケコ';
+            const columns = Math.floor(window.innerWidth / 30); // 从20增加到30，减少列数
                 
                 for (let i = 0; i < columns; i++) {
                     const column = document.createElement('div');
                     column.style.position = 'absolute';
-                    column.style.left = `${i * 20}px`;
+                column.style.left = `${i * 30}px`;
                     column.style.top = `-${Math.random() * 100 + 50}px`;
                     column.style.color = '#10b981';
                     column.style.fontFamily = 'monospace';
-                    column.style.fontSize = '14px';
+                column.style.fontSize = '12px'; // 减小字体
                     
-                    const length = Math.floor(Math.random() * 20 + 10);
+                const length = Math.floor(Math.random() * 12 + 6); // 减少长度
                     let content = '';
                     for (let j = 0; j < length; j++) {
                         content += chars[Math.floor(Math.random() * chars.length)] + '<br>';
                     }
                     column.innerHTML = content;
                     
-                    const duration = Math.random() * 10 + 10;
+                const duration = Math.random() * 8 + 12;
                     column.style.animation = `fall ${duration}s linear infinite`;
                     column.style.animationDelay = `${Math.random() * 5}s`;
                     
                     container.appendChild(column);
                 }
-            });
         }
         
-        // 6. 悬浮数据点
+        // 6. 悬浮数据点（优化：减少数量）
         function createDataPoints() {
             const container = document.getElementById('dataPoints');
             if (!container) return;
             container.innerHTML = '';
             
-            const pointCount = 8;
+            const pointCount = 5; // 从8减少到5
             
             for (let i = 0; i < pointCount; i++) {
                 const point = document.createElement('div');
                 point.classList.add('data-point');
                 
-                const size = Math.random() * 6 + 2;
+                const size = Math.random() * 4 + 2; // 减小尺寸
                 const left = Math.random() * 90 + 5 + '%';
                 const top = Math.random() * 90 + 5 + '%';
                 const delay = Math.random() * 2 + 's';
                 
-                const colors = ['rgba(6, 182, 212, 0.6)', 'rgba(16, 185, 129, 0.6)', 'rgba(124, 58, 237, 0.6)'];
+                const colors = ['rgba(6, 182, 212, 0.5)', 'rgba(16, 185, 129, 0.5)', 'rgba(124, 58, 237, 0.5)'];
                 const color = colors[Math.floor(Math.random() * colors.length)];
                 point.style.background = color;
-                point.style.boxShadow = `0 0 8px ${color}`;
+                point.style.boxShadow = `0 0 6px ${color}`; // 减小阴影
                 
                 point.style.width = `${size}px`;
                 point.style.height = `${size}px`;
@@ -874,25 +1259,59 @@
             }
         }
 
-        // 7. 滚动进度指示器
-        window.addEventListener('scroll', function() {
+        // 7. 滚动进度指示器（优化：使用节流和Intersection Observer）
+        let scrollTimeout;
+        const scrollIndicator = document.getElementById("scrollIndicator");
+        
+        function updateScrollIndicator() {
             const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
             const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
             const scrolled = (winScroll / height) * 100;
-            document.getElementById("scrollIndicator").style.width = scrolled + "%";
-            
-            const sections = document.querySelectorAll('section');
-            sections.forEach(section => {
-                if (section.classList.contains('animation-triggered')) return;
-                
-                const sectionTop = section.getBoundingClientRect().top;
-                const windowHeight = window.innerHeight;
-                if (sectionTop < windowHeight * 0.85) {
-                    section.classList.remove('opacity-0', 'transform', 'translate-y-10');
-                    section.classList.add('animation-triggered');
+            if (scrollIndicator) {
+                scrollIndicator.style.width = scrolled + "%";
+            }
+        }
+        
+        // 使用节流优化滚动事件
+        window.addEventListener('scroll', function() {
+            if (scrollTimeout) {
+                cancelAnimationFrame(scrollTimeout);
+            }
+            scrollTimeout = requestAnimationFrame(updateScrollIndicator);
+        }, { passive: true });
+        
+        // 使用Intersection Observer优化动画触发
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -10% 0px'
+        };
+        
+        const sectionObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !entry.target.classList.contains('animation-triggered')) {
+                    entry.target.classList.remove('opacity-0', 'transform', 'translate-y-10');
+                    entry.target.classList.add('animation-triggered');
                 }
             });
-        });
+        }, observerOptions);
+        
+        // 初始化时检查可见的section
+        function initSectionAnimations() {
+            const sections = document.querySelectorAll('section');
+            sections.forEach(section => {
+                const rect = section.getBoundingClientRect();
+                const isVisible = rect.top < window.innerHeight * 0.9;
+                
+                if (isVisible) {
+                    section.classList.remove('opacity-0', 'transform', 'translate-y-10');
+                    section.classList.add('animation-triggered');
+                } else {
+                    sectionObserver.observe(section);
+                }
+            });
+        }
+        
+        initSectionAnimations();
 
         // 8. 轮播图功能
         function initCarousel() {
@@ -956,12 +1375,19 @@
             });
         }
 
-        // 9. 图表初始化
+        // 9. 图表初始化（延迟加载，等待Chart.js加载完成）
         function initChart() {
             const chartElement = document.getElementById('techChart');
             if (!chartElement) {
                 return;
             }
+            
+            // 确保Chart.js已加载
+            if (typeof Chart === 'undefined') {
+                setTimeout(initChart, 100);
+                return;
+            }
+            
             const ctx = chartElement.getContext('2d');
             
             new Chart(ctx, {
@@ -1002,26 +1428,26 @@
             });
         }
 
-        // 10. 背景粒子效果
+        // 10. 背景粒子效果（优化：减少粒子数量）
         function initParticles() {
             const particlesContainer = document.getElementById('particles');
             if (!particlesContainer) {
                 return;
             }
             
-            const particleCount = 30;
+            const particleCount = 15; // 从30减少到15
             
             for (let i = 0; i < particleCount; i++) {
                 const particle = document.createElement('div');
                 
-                const size = Math.random() * 3 + 1;
+                const size = Math.random() * 2 + 1; // 减小尺寸
                 const x = Math.random() * 100;
                 const y = Math.random() * 100;
                 const delay = Math.random() * 5;
                 const duration = Math.random() * 10 + 10;
-                const opacity = Math.random() * 0.5 + 0.1;
+                const opacity = Math.random() * 0.3 + 0.1; // 降低透明度
                 
-                const colors = ['#06b6d4', '#10b981', '#7c3aed', '#334155'];
+                const colors = ['#06b6d4', '#10b981', '#7c3aed'];
                 const color = colors[Math.floor(Math.random() * colors.length)];
                 
                 particle.style.cssText = `
@@ -1057,49 +1483,58 @@
             });
         });
 
-        // 12. 窗口大小变化处理
+        // 12. 窗口大小变化处理（优化：使用防抖）
+        let resizeTimeout;
         function handleResize() {
+            if (resizeTimeout) {
+                clearTimeout(resizeTimeout);
+            }
+            resizeTimeout = setTimeout(() => {
             createDataLines();
             createCodeRain();
+            }, 250); // 防抖延迟
         }
 
-        // 页面加载完成后初始化所有效果
+        // 页面加载完成后初始化所有效果（优化：延迟加载非关键效果）
         window.addEventListener('load', function() {
-            updateParticles();
+            // 关键功能立即加载
+            initCarousel();
+            animateLoadRates();
+            initChart();
+            
+            // 使用节流优化鼠标事件
+            let mouseThrottle = 0;
             document.addEventListener('mousemove', (e) => {
-                if (Math.random() > 0.7) {
+                mouseThrottle++;
+                if (mouseThrottle % 3 === 0 && Math.random() > 0.8) { // 进一步减少频率
                     createParticle(e.clientX, e.clientY);
                 }
-            });
+            }, { passive: true });
+            
             document.addEventListener('click', (e) => {
                 createRipple(e.clientX, e.clientY);
-            });
+            }, { passive: true });
             
+            // 延迟加载视觉效果
+            setTimeout(() => {
+                updateParticles();
             createDataLines();
-            animateLoadRates();
-            createCodeRain();
-            createDataPoints();
-            initCarousel();
-            initChart();
             initParticles();
+            }, 500);
             
-            window.addEventListener('resize', handleResize);
-            
+            // 进一步延迟代码雨（性能消耗较大）
             setTimeout(() => {
-                document.getElementById('introSection').classList.remove('opacity-0', 'transform', 'translate-y-10');
-            }, 300);
+                createCodeRain();
+            }, 1000);
             
+            // 延迟加载数据点
             setTimeout(() => {
-                document.getElementById('carouselSection').classList.remove('opacity-0', 'transform', 'translate-y-10');
-            }, 600);
+                createDataPoints();
+            }, 800);
             
-            setTimeout(() => {
-                document.getElementById('projectsSection').classList.remove('opacity-0', 'transform', 'translate-y-10');
-            }, 900);
+            window.addEventListener('resize', handleResize, { passive: true });
             
-            setTimeout(() => {
-                document.getElementById('techSection').classList.remove('opacity-0', 'transform', 'translate-y-10');
-            }, 1200);
+            // 初始动画已由Intersection Observer处理，移除setTimeout
         });
     </script>
 </body>
